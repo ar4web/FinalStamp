@@ -60,7 +60,8 @@ function autoHist() {
 /* ── RTL detection ─────────────────────────────────────────────── */
 const RTL_RE = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
 const isRTL = (t) => RTL_RE.test(t || "");
-const layerDir = (l) => (l.dir === "auto" ? (isRTL(l.text) ? "rtl" : "ltr") : l.dir);
+const layerDir = (l) =>
+  l.dir === "auto" ? (isRTL(l.text) ? "rtl" : "ltr") : l.dir;
 
 /* ── Debounce ──────────────────────────────────────────────────── */
 const debounce = (fn, ms = 40) => {
@@ -119,7 +120,8 @@ function loadState() {
     if (!data || typeof data !== "object") return false;
     cfg = buildConfig(data.template || "oval");
     Object.assign(cfg, data);
-    if (!Array.isArray(cfg.layers) || cfg.layers.length === 0) cfg.layers = defaultLayers();
+    if (!Array.isArray(cfg.layers) || cfg.layers.length === 0)
+      cfg.layers = defaultLayers();
     cfg.layers = cfg.layers.map((l) => makeLayer(l));
     DPI_CURRENT = cfg.dpi || 300;
     selId = cfg.layers[0].id;
@@ -144,7 +146,10 @@ function showToast(msg) {
    ================================================================ */
 const FONTS = [
   { group: "Universal (all languages)", items: ["Noto Sans", "Noto Serif"] },
-  { group: "Arabic", items: ["Noto Sans Arabic", "Noto Naskh Arabic", "Noto Kufi Arabic"] },
+  {
+    group: "Arabic",
+    items: ["Noto Sans Arabic", "Noto Naskh Arabic", "Noto Kufi Arabic"],
+  },
   { group: "CJK", items: ["Noto Sans SC", "Noto Sans JP", "Noto Sans KR"] },
   {
     group: "Indic / Other scripts",
@@ -180,7 +185,9 @@ function fontOptHTML(sel) {
   return FONTS.map(
     (g) =>
       `<optgroup label="${g.group}">` +
-      g.items.map((f) => `<option${f === sel ? " selected" : ""}>${f}</option>`).join("") +
+      g.items
+        .map((f) => `<option${f === sel ? " selected" : ""}>${f}</option>`)
+        .join("") +
       "</optgroup>",
   ).join("");
 }
@@ -189,7 +196,8 @@ function fontOptHTML(sel) {
    STATE MODEL
    ================================================================ */
 function autoLayerName(l) {
-  if (l.type === "shape") return (l.shapeType || "Shape").replace(/^./, (c) => c.toUpperCase());
+  if (l.type === "shape")
+    return (l.shapeType || "Shape").replace(/^./, (c) => c.toUpperCase());
   if (l.type === "image") return l.imageName || "Image";
   const t = (l.text || "").trim();
   if (t) return t.length > 22 ? t.slice(0, 22) + "…" : t;
@@ -679,7 +687,8 @@ function proportionalScale(factor) {
     l.radiusMm = Math.round(l.radiusMm * f * 10) / 10;
     l.offsetXmm = Math.round(l.offsetXmm * f * 10) / 10;
     l.offsetYmm = Math.round(l.offsetYmm * f * 10) / 10;
-    if (l.type === "shape") l.shapeSizeMm = Math.round(l.shapeSizeMm * f * 10) / 10;
+    if (l.type === "shape")
+      l.shapeSizeMm = Math.round(l.shapeSizeMm * f * 10) / 10;
     if (l.type === "image") {
       l.imageWidthMm = Math.round(l.imageWidthMm * f * 10) / 10;
       l.imageHeightMm = Math.round(l.imageHeightMm * f * 10) / 10;
@@ -704,7 +713,15 @@ function ellipseStroke(cx, cy, rx, ry, thickMm, color) {
   ctx.strokeStyle = color;
   ctx.lineWidth = lw;
   ctx.beginPath();
-  ctx.ellipse(cx, cy, Math.max(0.5, rx - lw / 2), Math.max(0.5, ry - lw / 2), 0, 0, Math.PI * 2);
+  ctx.ellipse(
+    cx,
+    cy,
+    Math.max(0.5, rx - lw / 2),
+    Math.max(0.5, ry - lw / 2),
+    0,
+    0,
+    Math.PI * 2,
+  );
   ctx.stroke();
   ctx.restore();
 }
@@ -754,7 +771,8 @@ function drawGeometry(cx, cy, wPx, hPx, color) {
   const cCenter = rc.center ? hexRgba(rc.center, op) : color;
 
   if (cfg.shape === "rectangle") {
-    if (rv.outer !== false) rectStroke(cx, cy, wPx, hPx, 0, cfg.outerRingThickness, cOuter);
+    if (rv.outer !== false)
+      rectStroke(cx, cy, wPx, hPx, 0, cfg.outerRingThickness, cOuter);
     if (cfg.rings >= 2 && cfg.innerRingThickness > 0 && rv.inner !== false) {
       rectStroke(
         cx,
@@ -767,27 +785,54 @@ function drawGeometry(cx, cy, wPx, hPx, color) {
       );
     }
     if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0 && rv.inner2 !== false) {
-      const inset2 = cfg.outerRingThickness + cfg.ringGap + cfg.innerRingThickness + cfg.ringGap;
+      const inset2 =
+        cfg.outerRingThickness +
+        cfg.ringGap +
+        cfg.innerRingThickness +
+        cfg.ringGap;
       rectStroke(cx, cy, wPx, hPx, inset2, cfg.innerRing2Thickness, cInner2);
     }
     return;
   }
 
   // Ellipse / oval / circle
-  if (rv.outer !== false) ellipseStroke(cx, cy, rx, ry, cfg.outerRingThickness, cOuter);
+  if (rv.outer !== false)
+    ellipseStroke(cx, cy, rx, ry, cfg.outerRingThickness, cOuter);
 
   if (cfg.rings >= 2 && cfg.innerRingThickness > 0 && rv.inner !== false) {
-    ellipseStroke(cx, cy, rx - insetPx, ry - insetPx, cfg.innerRingThickness, cInner);
+    ellipseStroke(
+      cx,
+      cy,
+      rx - insetPx,
+      ry - insetPx,
+      cfg.innerRingThickness,
+      cInner,
+    );
   }
   if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0 && rv.inner2 !== false) {
     const inset2 =
-      mmPx(cfg.outerRingThickness + cfg.ringGap) + mmPx(cfg.innerRingThickness + cfg.ringGap);
-    ellipseStroke(cx, cy, rx - inset2, ry - inset2, cfg.innerRing2Thickness, cInner2);
+      mmPx(cfg.outerRingThickness + cfg.ringGap) +
+      mmPx(cfg.innerRingThickness + cfg.ringGap);
+    ellipseStroke(
+      cx,
+      cy,
+      rx - inset2,
+      ry - inset2,
+      cfg.innerRing2Thickness,
+      cInner2,
+    );
   }
   if (cfg.centerAreaDiameter > 0 && rv.center !== false) {
     const cr = mmPx(cfg.centerAreaDiameter / 2);
     const sy = cfg.shape === "oval" ? clamp(ry / rx, 0.1, 1) : 1;
-    ellipseStroke(cx, cy, cr, cr * sy, Math.max(0.4, cfg.innerRingThickness ?? 0.8), cCenter);
+    ellipseStroke(
+      cx,
+      cy,
+      cr,
+      cr * sy,
+      Math.max(0.4, cfg.innerRingThickness ?? 0.8),
+      cCenter,
+    );
   }
 }
 
@@ -902,13 +947,19 @@ function drawCurvedLayer(layer, cx, cy, color, rng) {
       const f = (x + slice / 2 - padPx) / textW;
       if (f < -0.02 || f > 1.02) continue;
       const cf = Math.max(0, Math.min(1, f));
-      const ang = (layer.startAngle + (layer.endAngle - layer.startAngle) * cf) * DEG;
+      const ang =
+        (layer.startAngle + (layer.endAngle - layer.startAngle) * cf) * DEG;
       const tx = cx + Math.cos(ang) * textRx;
       const ty = cy + Math.sin(ang) * textRy;
 
-      const tangent = Math.atan2(textRy * Math.cos(ang), -textRx * Math.sin(ang));
+      const tangent = Math.atan2(
+        textRy * Math.cos(ang),
+        -textRx * Math.sin(ang),
+      );
       const jit =
-        cfg.rotationJitter && cfg.jitterDegrees > 0 ? (rng() * 2 - 1) * cfg.jitterDegrees * DEG : 0;
+        cfg.rotationJitter && cfg.jitterDegrees > 0
+          ? (rng() * 2 - 1) * cfg.jitterDegrees * DEG
+          : 0;
       ctx.save();
       ctx.translate(tx, ty);
       ctx.rotate(tangent + (layer.flip ? Math.PI : 0) + jit);
@@ -975,7 +1026,10 @@ function drawShapeLayer(layer, cx, cy, color, rng) {
         else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
       }
       ctx.closePath();
-    } else if (layer.shapeType === "pentagon" || layer.shapeType === "hexagon") {
+    } else if (
+      layer.shapeType === "pentagon" ||
+      layer.shapeType === "hexagon"
+    ) {
       const n = layer.shapeType === "pentagon" ? 5 : 6;
       for (let i = 0; i < n; i++) {
         const a = (i * 2 * Math.PI) / n - Math.PI / 2;
@@ -1149,7 +1203,10 @@ function drawEditorOverlays() {
       ringLabel = "Ring 2";
     } else if (selRing === "inner2" && cfg.rings >= 3) {
       ringInsetPx = mmPx(
-        cfg.outerRingThickness + cfg.ringGap + cfg.innerRingThickness + cfg.ringGap,
+        cfg.outerRingThickness +
+          cfg.ringGap +
+          cfg.innerRingThickness +
+          cfg.ringGap,
       );
       ringColor = "#059669";
       ringLabel = "Ring 3";
@@ -1169,7 +1226,15 @@ function drawEditorOverlays() {
 
       if (cfg.shape === "circle" || cfg.shape === "oval") {
         ctx.beginPath();
-        ctx.ellipse(scx, scy, Math.max(2, selHw), Math.max(2, selHh), 0, 0, Math.PI * 2);
+        ctx.ellipse(
+          scx,
+          scy,
+          Math.max(2, selHw),
+          Math.max(2, selHh),
+          0,
+          0,
+          Math.PI * 2,
+        );
         ctx.stroke();
       } else if (cfg.shape === "rectangle") {
         ctx.strokeRect(scx - selHw, scy - selHh, selHw * 2, selHh * 2);
@@ -1204,9 +1269,15 @@ function drawEditorOverlays() {
     });
     // Dashed selection box at the selected ring bounds
     ctx.setLineDash([5, 4]);
-    ctx.strokeStyle = ringColor === "#2563eb" ? "rgba(37,99,235,0.75)" : ringColor + "cc";
+    ctx.strokeStyle =
+      ringColor === "#2563eb" ? "rgba(37,99,235,0.75)" : ringColor + "cc";
     ctx.lineWidth = 2;
-    ctx.strokeRect(scx - selHw - 1, scy - selHh - 1, selHw * 2 + 2, selHh * 2 + 2);
+    ctx.strokeRect(
+      scx - selHw - 1,
+      scy - selHh - 1,
+      selHw * 2 + 2,
+      selHh * 2 + 2,
+    );
     ctx.setLineDash([]);
     ctx.restore();
     return;
@@ -1224,11 +1295,21 @@ function drawEditorOverlays() {
       const mlRx = _e.rx;
       const mlRy = _e.ry;
 
-      ctx.strokeStyle = isPrimary ? "rgba(37,99,235,0.85)" : "rgba(37,99,235,0.5)";
+      ctx.strokeStyle = isPrimary
+        ? "rgba(37,99,235,0.85)"
+        : "rgba(37,99,235,0.5)";
       ctx.lineWidth = isPrimary ? 2.5 : 1.5;
       ctx.setLineDash(isPrimary ? [5, 5] : [3, 4]);
       ctx.beginPath();
-      ctx.ellipse(cx, cy, mmPx(mlRx), mmPx(mlRy), 0, ml.startAngle * DEG, ml.endAngle * DEG);
+      ctx.ellipse(
+        cx,
+        cy,
+        mmPx(mlRx),
+        mmPx(mlRy),
+        0,
+        ml.startAngle * DEG,
+        ml.endAngle * DEG,
+      );
       ctx.stroke();
       ctx.restore();
     } else {
@@ -1238,7 +1319,9 @@ function drawEditorOverlays() {
       ctx.font = `${safeWeight(ml.font, ml.weight)} ${mmPx(ml.sizeMm)}px "${ml.font}"`;
       const tw = ctx.measureText(ml.text).width;
       const th = mmPx(ml.sizeMm);
-      ctx.strokeStyle = isPrimary ? "rgba(99,102,241,0.7)" : "rgba(99,102,241,0.35)";
+      ctx.strokeStyle = isPrimary
+        ? "rgba(99,102,241,0.7)"
+        : "rgba(99,102,241,0.35)";
       ctx.lineWidth = isPrimary ? 1.8 : 1;
       ctx.setLineDash(isPrimary ? [3, 3] : [2, 3]);
       ctx.beginPath();
@@ -1270,9 +1353,21 @@ function drawEditorOverlays() {
       lRyPx = mmPx(lRy);
 
     const handles = [
-      { x: cx + Math.cos(theta1) * lRxPx, y: cy + Math.sin(theta1) * lRyPx, role: "start" },
-      { x: cx + Math.cos(theta2) * lRxPx, y: cy + Math.sin(theta2) * lRyPx, role: "end" },
-      { x: cx + Math.cos(thetaM) * lRxPx, y: cy + Math.sin(thetaM) * lRyPx, role: "radius" },
+      {
+        x: cx + Math.cos(theta1) * lRxPx,
+        y: cy + Math.sin(theta1) * lRyPx,
+        role: "start",
+      },
+      {
+        x: cx + Math.cos(theta2) * lRxPx,
+        y: cy + Math.sin(theta2) * lRyPx,
+        role: "end",
+      },
+      {
+        x: cx + Math.cos(thetaM) * lRxPx,
+        y: cy + Math.sin(thetaM) * lRyPx,
+        role: "radius",
+      },
     ];
 
     handles.forEach((h) => {
@@ -1309,7 +1404,11 @@ function drawEditorOverlays() {
     ctx.font = "bold 10px sans-serif";
     ctx.fillStyle = "rgba(37,99,235,0.9)";
     ctx.textAlign = "center";
-    ctx.fillText(`${sz.w.toFixed(1)} × ${sz.h.toFixed(1)} mm`, scx, scy + hh2 + 16);
+    ctx.fillText(
+      `${sz.w.toFixed(1)} × ${sz.h.toFixed(1)} mm`,
+      scx,
+      scy + hh2 + 16,
+    );
     ctx.restore();
   }
 }
@@ -1349,7 +1448,8 @@ function render() {
     const lcolor = layer.color ? hexRgba(layer.color, cfg.opacity) : color;
     if (layer.type === "shape") drawShapeLayer(layer, scx, scy, lcolor, rng);
     else if (layer.type === "image") drawImageLayer(layer, scx, scy);
-    else if (layer.mode === "curved") drawCurvedLayer(layer, scx, scy, lcolor, rng);
+    else if (layer.mode === "curved")
+      drawCurvedLayer(layer, scx, scy, lcolor, rng);
     else drawStraightLayer(layer, scx, scy, lcolor, rng);
   });
 
@@ -1567,9 +1667,18 @@ function bindPanZoom() {
         const hRxPx = mmPx(hRx),
           hRyPx = mmPx(hRy);
 
-        const hStart = { x: cx + Math.cos(theta1) * hRxPx, y: cy + Math.sin(theta1) * hRyPx };
-        const hEnd = { x: cx + Math.cos(theta2) * hRxPx, y: cy + Math.sin(theta2) * hRyPx };
-        const hRad = { x: cx + Math.cos(thetaM) * hRxPx, y: cy + Math.sin(thetaM) * hRyPx };
+        const hStart = {
+          x: cx + Math.cos(theta1) * hRxPx,
+          y: cy + Math.sin(theta1) * hRyPx,
+        };
+        const hEnd = {
+          x: cx + Math.cos(theta2) * hRxPx,
+          y: cy + Math.sin(theta2) * hRyPx,
+        };
+        const hRad = {
+          x: cx + Math.cos(thetaM) * hRxPx,
+          y: cy + Math.sin(thetaM) * hRyPx,
+        };
 
         const dist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
 
@@ -1615,7 +1724,10 @@ function bindPanZoom() {
         }
         if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0) {
           const inset2 =
-            cfg.outerRingThickness + cfg.ringGap + cfg.innerRingThickness + cfg.ringGap;
+            cfg.outerRingThickness +
+            cfg.ringGap +
+            cfg.innerRingThickness +
+            cfg.ringGap;
           const i3Outer = outerR - inset2 + cfg.innerRing2Thickness;
           const i3Inner = Math.max(0, outerR - inset2);
           if (r >= i3Inner - 1 && r <= i3Outer + 1) hitRing = "inner2";
@@ -1635,9 +1747,15 @@ function bindPanZoom() {
         }
         if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0) {
           const inset2 =
-            cfg.outerRingThickness + cfg.ringGap + cfg.innerRingThickness + cfg.ringGap;
+            cfg.outerRingThickness +
+            cfg.ringGap +
+            cfg.innerRingThickness +
+            cfg.ringGap;
           const i3Outer = Math.max(0, outerR - inset2);
-          const i3Inner = Math.max(0, outerR - inset2 - cfg.innerRing2Thickness);
+          const i3Inner = Math.max(
+            0,
+            outerR - inset2 - cfg.innerRing2Thickness,
+          );
           if (r >= i3Inner - 1 && r <= i3Outer + 1) hitRing = "inner2";
         }
       } else if (cfg.shape === "rectangle") {
@@ -1661,11 +1779,17 @@ function bindPanZoom() {
           if (cfg.rings >= 2 && cfg.innerRingThickness > 0) {
             const innerW2 = Math.max(
               0,
-              hw - cfg.outerRingThickness - cfg.ringGap - cfg.innerRingThickness,
+              hw -
+                cfg.outerRingThickness -
+                cfg.ringGap -
+                cfg.innerRingThickness,
             );
             const innerH2 = Math.max(
               0,
-              hh - cfg.outerRingThickness - cfg.ringGap - cfg.innerRingThickness,
+              hh -
+                cfg.outerRingThickness -
+                cfg.ringGap -
+                cfg.innerRingThickness,
             );
             const midW = (innerW + innerW2) / 2;
             const midH = (innerH + innerH2) / 2;
@@ -1697,11 +1821,17 @@ function bindPanZoom() {
             );
             const innerW2 = Math.max(
               0,
-              hw - cfg.outerRingThickness - cfg.ringGap - cfg.innerRingThickness,
+              hw -
+                cfg.outerRingThickness -
+                cfg.ringGap -
+                cfg.innerRingThickness,
             );
             const innerH2 = Math.max(
               0,
-              hh - cfg.outerRingThickness - cfg.ringGap - cfg.innerRingThickness,
+              hh -
+                cfg.outerRingThickness -
+                cfg.ringGap -
+                cfg.innerRingThickness,
             );
             const midW = (innerW2 + innerW3) / 2;
             const midH = (innerH2 + innerH3) / 2;
@@ -1741,14 +1871,17 @@ function bindPanZoom() {
           const hitR =
             layer.type === "shape"
               ? mmPx(layer.shapeSizeMm) + 10
-              : Math.max(mmPx(layer.imageWidthMm), mmPx(layer.imageHeightMm)) / 2 + 10;
+              : Math.max(mmPx(layer.imageWidthMm), mmPx(layer.imageHeightMm)) /
+                  2 +
+                10;
           if (Math.hypot(canvasCoords.x - tx, canvasCoords.y - ty) < hitR) {
             hitLayer = true;
             if (e.ctrlKey || e.metaKey) {
               if (selectedIds.has(layer.id)) {
                 selectedIds.delete(layer.id);
                 if (selId === layer.id)
-                  selId = cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
+                  selId =
+                    cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
               } else {
                 selectedIds.add(layer.id);
                 selId = layer.id;
@@ -1762,7 +1895,11 @@ function bindPanZoom() {
             _showEffects = false;
             buildLayerList();
             buildLayerProps();
-            activeDrag = { type: "handle", role: "translate", layerId: layer.id };
+            activeDrag = {
+              type: "handle",
+              role: "translate",
+              layerId: layer.id,
+            };
             render();
             break;
           }
@@ -1783,7 +1920,8 @@ function bindPanZoom() {
               if (selectedIds.has(layer.id)) {
                 selectedIds.delete(layer.id);
                 if (selId === layer.id)
-                  selId = cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
+                  selId =
+                    cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
               } else {
                 selectedIds.add(layer.id);
                 selId = layer.id;
@@ -1797,7 +1935,11 @@ function bindPanZoom() {
             _showEffects = false;
             buildLayerList();
             buildLayerProps();
-            activeDrag = { type: "handle", role: "translate", layerId: layer.id };
+            activeDrag = {
+              type: "handle",
+              role: "translate",
+              layerId: layer.id,
+            };
             render();
             break;
           }
@@ -1805,10 +1947,12 @@ function bindPanZoom() {
           const sz4 = stampSize();
           const hitRx = sz4.w / 2,
             hitRy = sz4.h / 2;
-          const rMouse = Math.hypot(mmCoords.dxMm / hitRx, mmCoords.dyMm / hitRy) * hitRx;
+          const rMouse =
+            Math.hypot(mmCoords.dxMm / hitRx, mmCoords.dyMm / hitRy) * hitRx;
           const diffR = Math.abs(rMouse - layer.radiusMm);
           if (diffR < 4) {
-            let angle = Math.atan2(mmCoords.dyMm / hitRy, mmCoords.dxMm / hitRx) / DEG;
+            let angle =
+              Math.atan2(mmCoords.dyMm / hitRy, mmCoords.dxMm / hitRx) / DEG;
             if (angle < 0) angle += 360;
 
             let sAng = layer.startAngle % 360;
@@ -1829,7 +1973,8 @@ function bindPanZoom() {
                 if (selectedIds.has(layer.id)) {
                   selectedIds.delete(layer.id);
                   if (selId === layer.id)
-                    selId = cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
+                    selId =
+                      cfg.layers.find((l) => selectedIds.has(l.id))?.id || null;
                 } else {
                   selectedIds.add(layer.id);
                   selId = layer.id;
@@ -1910,8 +2055,14 @@ function bindPanZoom() {
                 Math.min(120, Math.round(origSz.w * factor * 10) / 10),
               );
             } else {
-              cfg.width = Math.max(15, Math.min(120, Math.round(origSz.w * factor * 10) / 10));
-              cfg.height = Math.max(10, Math.min(90, Math.round(origSz.h * factor * 10) / 10));
+              cfg.width = Math.max(
+                15,
+                Math.min(120, Math.round(origSz.w * factor * 10) / 10),
+              );
+              cfg.height = Math.max(
+                10,
+                Math.min(90, Math.round(origSz.h * factor * 10) / 10),
+              );
             }
             cfg.outerRingThickness = Math.round(origSz.ot * factor * 10) / 10;
             cfg.innerRingThickness = Math.round(origSz.it * factor * 10) / 10;
@@ -1924,17 +2075,23 @@ function bindPanZoom() {
               l.offsetXmm = Math.round(origSz.layerOffX[i] * factor * 10) / 10;
               l.offsetYmm = Math.round(origSz.layerOffY[i] * factor * 10) / 10;
               if (l.type === "shape")
-                l.shapeSizeMm = Math.round((origSz.layerShapes[i] || 10) * factor * 10) / 10;
+                l.shapeSizeMm =
+                  Math.round((origSz.layerShapes[i] || 10) * factor * 10) / 10;
               if (l.type === "image") {
-                l.imageWidthMm = Math.round((origSz.layerImgW[i] || 10) * factor * 10) / 10;
-                l.imageHeightMm = Math.round((origSz.layerImgH[i] || 10) * factor * 10) / 10;
+                l.imageWidthMm =
+                  Math.round((origSz.layerImgW[i] || 10) * factor * 10) / 10;
+                l.imageHeightMm =
+                  Math.round((origSz.layerImgH[i] || 10) * factor * 10) / 10;
               }
             });
           }
         } else {
           const r = Math.hypot(mmCoords.dxMm, mmCoords.dyMm / aspect) * 2;
           if (activeDrag.ring === "outer") {
-            const thickness = Math.max(0.3, Math.min(8, Math.abs(mmCoords.dxMm)));
+            const thickness = Math.max(
+              0.3,
+              Math.min(8, Math.abs(mmCoords.dxMm)),
+            );
             cfg.outerRingThickness = Math.round(thickness * 10) / 10;
           } else if (activeDrag.ring === "inner") {
             const thickness = Math.max(0, Math.min(5, Math.abs(mmCoords.dxMm)));
@@ -1946,7 +2103,10 @@ function bindPanZoom() {
               const ar = cfg.shape === "oval" ? cfg.height / cfg.width : 1;
               const w = Math.round(r * 10) / 10;
               cfg.width = Math.max(15, Math.min(120, w));
-              cfg.height = Math.max(10, Math.min(90, Math.round(w * ar * 10) / 10));
+              cfg.height = Math.max(
+                10,
+                Math.min(90, Math.round(w * ar * 10) / 10),
+              );
             }
           }
         }
@@ -1961,7 +2121,11 @@ function bindPanZoom() {
       let angle;
       if (cfg.shape === "oval") {
         const dragSz = stampSize();
-        angle = Math.atan2(mmCoords.dyMm / (dragSz.h / 2), mmCoords.dxMm / (dragSz.w / 2)) / DEG;
+        angle =
+          Math.atan2(
+            mmCoords.dyMm / (dragSz.h / 2),
+            mmCoords.dxMm / (dragSz.w / 2),
+          ) / DEG;
       } else {
         angle = Math.atan2(mmCoords.dyMm, mmCoords.dxMm) / DEG;
       }
@@ -1977,7 +2141,10 @@ function bindPanZoom() {
           if (cfg.shape === "oval") {
             const dragSz2 = stampSize();
             newRadius =
-              Math.hypot(mmCoords.dxMm / (dragSz2.w / 2), mmCoords.dyMm / (dragSz2.h / 2)) *
+              Math.hypot(
+                mmCoords.dxMm / (dragSz2.w / 2),
+                mmCoords.dyMm / (dragSz2.h / 2),
+              ) *
               (dragSz2.w / 2);
           } else {
             newRadius = Math.hypot(mmCoords.dxMm, mmCoords.dyMm);
@@ -2007,9 +2174,16 @@ function bindPanZoom() {
         }
         const radiusDelta = newRadius - activeDrag.startRadius;
         l.radiusMm =
-          Math.round(Math.max(5, Math.min(60, activeDrag.startRadius + radiusDelta)) * 10) / 10;
-        l.startAngle = Math.round((activeDrag.startLayerStart + angleDelta + 360) % 360);
-        l.endAngle = Math.round((activeDrag.startLayerEnd + angleDelta + 360) % 360);
+          Math.round(
+            Math.max(5, Math.min(60, activeDrag.startRadius + radiusDelta)) *
+              10,
+          ) / 10;
+        l.startAngle = Math.round(
+          (activeDrag.startLayerStart + angleDelta + 360) % 360,
+        );
+        l.endAngle = Math.round(
+          (activeDrag.startLayerEnd + angleDelta + 360) % 360,
+        );
       }
 
       buildLayerProps();
@@ -2187,7 +2361,9 @@ function bindPanZoom() {
 function syncShapeChips() {
   document
     .querySelectorAll("[data-template]")
-    .forEach((b) => b.classList.toggle("active", b.dataset.template === cfg.template));
+    .forEach((b) =>
+      b.classList.toggle("active", b.dataset.template === cfg.template),
+    );
 }
 
 /* ================================================================
@@ -2236,7 +2412,9 @@ function bindGlobalInputs(root = document) {
 
     const key = input.dataset.bind;
     const ev =
-      input.type === "checkbox" || input.type === "color" || input.tagName === "SELECT"
+      input.type === "checkbox" ||
+      input.type === "color" ||
+      input.tagName === "SELECT"
         ? "change"
         : "input";
 
@@ -2292,7 +2470,8 @@ function bindGlobalInputs(root = document) {
       }
 
       // Numeric conversion
-      if (input.type === "number" || input.type === "range") v = parseFloat(v) || 0;
+      if (input.type === "number" || input.type === "range")
+        v = parseFloat(v) || 0;
 
       cfg[key] = v;
 
@@ -2830,7 +3009,14 @@ function buildTextContextHTML(l) {
 }
 
 function buildShapeLayerContextHTML(l) {
-  const shapeOpts = ["star", "pentagon", "hexagon", "diamond", "cross", "circle"]
+  const shapeOpts = [
+    "star",
+    "pentagon",
+    "hexagon",
+    "diamond",
+    "cross",
+    "circle",
+  ]
     .map(
       (s) =>
         `<option value="${s}"${l.shapeType === s ? " selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`,
@@ -2948,7 +3134,10 @@ function bindStampContextInputs(ctx) {
   // All data-ls inputs
   ctx.querySelectorAll("[data-ls]").forEach((input) => {
     const key = input.dataset.ls;
-    const ev = input.type === "checkbox" || input.tagName === "SELECT" ? "change" : "input";
+    const ev =
+      input.type === "checkbox" || input.tagName === "SELECT"
+        ? "change"
+        : "input";
     if (input.type === "range" || input.type === "number")
       input.addEventListener("change", autoHist);
     input.addEventListener(ev, () => {
@@ -2962,8 +3151,10 @@ function bindStampContextInputs(ctx) {
         }
       } else if (key === "thickness") {
         cfg.outerRingThickness = v;
-        if (cfg.rings >= 2) cfg.innerRingThickness = Math.round(v * 0.5 * 10) / 10;
-        if (cfg.rings >= 3) cfg.innerRing2Thickness = Math.round(v * 0.75 * 10) / 10;
+        if (cfg.rings >= 2)
+          cfg.innerRingThickness = Math.round(v * 0.5 * 10) / 10;
+        if (cfg.rings >= 3)
+          cfg.innerRing2Thickness = Math.round(v * 0.75 * 10) / 10;
       } else if (key === "centerAreaDiameter") cfg.centerAreaDiameter = v;
       else if (key === "cornerRadius") cfg.cornerRadius = v;
       else if (key === "offsetX") cfg.shapeOffsetXmm = v;
@@ -3011,7 +3202,10 @@ function applyShapeKeepLayers(name) {
 function bindTextContextInputs(ctx, l) {
   ctx.querySelectorAll("[data-ls]").forEach((input) => {
     const key = input.dataset.ls;
-    const ev = input.type === "checkbox" || input.tagName === "SELECT" ? "change" : "input";
+    const ev =
+      input.type === "checkbox" || input.tagName === "SELECT"
+        ? "change"
+        : "input";
     if (input.type === "range" || input.type === "number")
       input.addEventListener("change", autoHist);
     input.addEventListener(ev, () => {
@@ -3054,7 +3248,10 @@ function bindTextContextInputs(ctx, l) {
 function bindShapeLayerContextInputs(ctx, l) {
   ctx.querySelectorAll("[data-ls]").forEach((input) => {
     const key = input.dataset.ls;
-    const ev = input.type === "checkbox" || input.tagName === "SELECT" ? "change" : "input";
+    const ev =
+      input.type === "checkbox" || input.tagName === "SELECT"
+        ? "change"
+        : "input";
     if (input.type === "range" || input.type === "number")
       input.addEventListener("change", autoHist);
     input.addEventListener(ev, () => {
@@ -3146,7 +3343,9 @@ function bindAlignButtons(root) {
           else if (align === "bottom") ly.offsetYmm = 4;
           else if (align === "centerV") ly.offsetYmm = 0;
           else if (align === "distributeV") {
-            const sorted = [...layers].sort((a, b) => (a.offsetYmm || 0) - (b.offsetYmm || 0));
+            const sorted = [...layers].sort(
+              (a, b) => (a.offsetYmm || 0) - (b.offsetYmm || 0),
+            );
             const step = sorted.length > 1 ? 8 / (sorted.length - 1) : 0;
             sorted.forEach((ly2, i) => {
               ly2.offsetYmm = -4 + step * i;
@@ -3183,7 +3382,10 @@ function syncSwatches(color) {
   document
     .querySelectorAll("#swatchRow [data-color]")
     .forEach((s) =>
-      s.classList.toggle("active", s.dataset.color.toLowerCase() === (color || "").toLowerCase()),
+      s.classList.toggle(
+        "active",
+        s.dataset.color.toLowerCase() === (color || "").toLowerCase(),
+      ),
     );
 }
 
@@ -3198,7 +3400,10 @@ const ICO_DEL = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" str
 function escapeHtml(s) {
   return String(s == null ? "" : s).replace(
     /[&<>"']/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ],
   );
 }
 
@@ -3296,7 +3501,11 @@ function buildLayerList() {
         if (sel.length === 0) return;
         const copies = sel.map((l) => {
           const i = cfg.layers.findIndex((x) => x.id === l.id);
-          const copy = makeLayer({ ...l, id: uid(), name: (l.name || "Layer") + " copy" });
+          const copy = makeLayer({
+            ...l,
+            id: uid(),
+            name: (l.name || "Layer") + " copy",
+          });
           cfg.layers.splice(i + 1, 0, copy);
           return copy;
         });
@@ -3347,7 +3556,9 @@ function buildLayerList() {
       buildLayerList();
       buildLayerProps();
       // Make it obvious the editor updated.
-      const ls = document.getElementById("toolRailPanel") || document.getElementById("leftSidebar");
+      const ls =
+        document.getElementById("toolRailPanel") ||
+        document.getElementById("leftSidebar");
       if (ls) {
         ls.classList.remove("flash");
         void ls.offsetWidth;
@@ -3409,9 +3620,12 @@ function syncDPI() {
   DPI_CURRENT = cfg.dpi || 300;
   const px = (DPI_CURRENT / 25.4).toFixed(2);
   const el = document.getElementById("exportNote");
-  if (el) el.textContent = `${DPI_CURRENT} DPI · 1 mm = ${px} px · print-ready output`;
+  if (el)
+    el.textContent = `${DPI_CURRENT} DPI · 1 mm = ${px} px · print-ready output`;
   if (cfg.dpi !== undefined) {
-    document.querySelectorAll('[data-bind="dpi"]').forEach((s) => (s.value = cfg.dpi));
+    document
+      .querySelectorAll('[data-bind="dpi"]')
+      .forEach((s) => (s.value = cfg.dpi));
   }
 }
 
@@ -3484,7 +3698,14 @@ function arcPathSVG(cx, cy, rx, ry, startDeg, endDeg, flip) {
 function escXml(s) {
   return String(s).replace(
     /[<>&"']/g,
-    (c) => ({ "<": "&#60;", ">": "&#62;", "&": "&#38;", '"': "&#34;", "'": "&#39;" })[c],
+    (c) =>
+      ({
+        "<": "&#60;",
+        ">": "&#62;",
+        "&": "&#38;",
+        '"': "&#34;",
+        "'": "&#39;",
+      })[c],
   );
 }
 
@@ -3537,7 +3758,10 @@ function exportSVG() {
     }
     if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0 && rv.inner2 !== false) {
       const inset2 = mmPx(
-        cfg.outerRingThickness + cfg.ringGap + cfg.innerRingThickness + cfg.ringGap,
+        cfg.outerRingThickness +
+          cfg.ringGap +
+          cfg.innerRingThickness +
+          cfg.ringGap,
       );
       const il2 = mmPx(cfg.innerRing2Thickness);
       shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - inset2).toFixed(2)}" ry="${(ry - inset2).toFixed(2)}" fill="none" stroke="${color}" stroke-width="${il2.toFixed(2)}" opacity="${op}"/>`;
@@ -3649,7 +3873,9 @@ function initTabs() {
   document.querySelectorAll(".ts-chevron").forEach((chevron) => {
     chevron.addEventListener("click", () => {
       const key = chevron.dataset.ts;
-      const sec = key ? document.querySelector(`.ts-section:has([data-ts="${key}"])`) : null;
+      const sec = key
+        ? document.querySelector(`.ts-section:has([data-ts="${key}"])`)
+        : null;
       if (sec) sec.classList.toggle("ts-collapsed");
     });
   });
@@ -3678,7 +3904,9 @@ function initLeftSidebarShapes() {
 function syncLeftSidebarShapes() {
   document
     .querySelectorAll("[data-template]")
-    .forEach((b) => b.classList.toggle("active", b.dataset.template === cfg.template));
+    .forEach((b) =>
+      b.classList.toggle("active", b.dataset.template === cfg.template),
+    );
 }
 
 /* ── Shared reset helper ────────────────────────────────────────── */
@@ -3795,7 +4023,11 @@ function savePresetsList(presets) {
 
 function savePreset(name) {
   const presets = loadPresets();
-  presets.push({ name, config: JSON.parse(JSON.stringify(cfg)), date: Date.now() });
+  presets.push({
+    name,
+    config: JSON.parse(JSON.stringify(cfg)),
+    date: Date.now(),
+  });
   savePresetsList(presets);
   renderPresetsList();
   showToast("Preset saved: " + name);
@@ -3958,7 +4190,9 @@ function initExportDropdown() {
     if (name && name.trim()) savePreset(name.trim());
   });
   bind("exportConfig", () => exportConfigJSON());
-  bind("importConfig", () => document.getElementById("importConfigFile")?.click());
+  bind("importConfig", () =>
+    document.getElementById("importConfigFile")?.click(),
+  );
   bind("manage", () => {
     /* future: manage dialog */ showToast("Use the × on each preset to delete");
   });
@@ -3999,7 +4233,8 @@ function importConfigJSON(file) {
   reader.onload = (e) => {
     try {
       const imported = JSON.parse(e.target.result);
-      if (!imported.template || !imported.layers) throw new Error("Invalid config");
+      if (!imported.template || !imported.layers)
+        throw new Error("Invalid config");
       cfg = imported;
       cfg.seed = cfg.seed || Math.floor(Math.random() * 1e6);
       DPI_CURRENT = cfg.dpi || 300;
@@ -4047,7 +4282,8 @@ function initAutoAlign() {
   // When text content changes via paste, auto-align if it's the first text
   document.addEventListener("paste", (e) => {
     const active = document.activeElement;
-    if (!active || active.tagName !== "TEXTAREA" || !active.dataset.layer) return;
+    if (!active || active.tagName !== "TEXTAREA" || !active.dataset.layer)
+      return;
     const l = selLayer();
     if (!l) return;
     // Check if the text was default "NEW TEXT"
@@ -4070,109 +4306,111 @@ const ARROW_DN =
   '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 2v6M2.5 5.5L5 8l2.5-2.5"/></svg>';
 
 function initNumberInputs(root) {
-  root.querySelectorAll('input[type="number"]:not(.num-ready)').forEach((input) => {
-    input.classList.add("num-ready");
+  root
+    .querySelectorAll('input[type="number"]:not(.num-ready)')
+    .forEach((input) => {
+      input.classList.add("num-ready");
 
-    // Skip if already wrapped
-    if (input.parentElement.classList.contains("num-wrap")) return;
+      // Skip if already wrapped
+      if (input.parentElement.classList.contains("num-wrap")) return;
 
-    // Wheel support
-    input.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
-        const step = parseFloat(input.step) || 1;
+      // Wheel support
+      input.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          const step = parseFloat(input.step) || 1;
+          const min = parseFloat(input.min);
+          const max = parseFloat(input.max);
+          let v = parseFloat(input.value) || 0;
+          v += e.deltaY < 0 ? step : -step;
+          if (!isNaN(min)) v = Math.max(min, v);
+          if (!isNaN(max)) v = Math.min(max, v);
+          // Snap to step precision
+          const dec = (step.toString().split(".")[1] || "").length;
+          v = parseFloat(v.toFixed(dec));
+          input.value = v;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        },
+        { passive: false },
+      );
+
+      // Wrap with +/- arrows
+      const wrap = document.createElement("div");
+      wrap.className = "num-wrap";
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+
+      const arrows = document.createElement("div");
+      arrows.className = "num-arrows";
+
+      const btnUp = document.createElement("button");
+      btnUp.className = "num-arrow";
+      btnUp.innerHTML = ARROW_UP;
+      btnUp.tabIndex = -1;
+      btnUp.type = "button";
+
+      const btnDn = document.createElement("button");
+      btnDn.className = "num-arrow";
+      btnDn.innerHTML = ARROW_DN;
+      btnDn.tabIndex = -1;
+      btnDn.type = "button";
+
+      const stepNum = () => parseFloat(input.step) || 1;
+      const clamp = (v) => {
         const min = parseFloat(input.min);
         const max = parseFloat(input.max);
-        let v = parseFloat(input.value) || 0;
-        v += e.deltaY < 0 ? step : -step;
         if (!isNaN(min)) v = Math.max(min, v);
         if (!isNaN(max)) v = Math.min(max, v);
-        // Snap to step precision
-        const dec = (step.toString().split(".")[1] || "").length;
-        v = parseFloat(v.toFixed(dec));
-        input.value = v;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      },
-      { passive: false },
-    );
-
-    // Wrap with +/- arrows
-    const wrap = document.createElement("div");
-    wrap.className = "num-wrap";
-    input.parentNode.insertBefore(wrap, input);
-    wrap.appendChild(input);
-
-    const arrows = document.createElement("div");
-    arrows.className = "num-arrows";
-
-    const btnUp = document.createElement("button");
-    btnUp.className = "num-arrow";
-    btnUp.innerHTML = ARROW_UP;
-    btnUp.tabIndex = -1;
-    btnUp.type = "button";
-
-    const btnDn = document.createElement("button");
-    btnDn.className = "num-arrow";
-    btnDn.innerHTML = ARROW_DN;
-    btnDn.tabIndex = -1;
-    btnDn.type = "button";
-
-    const stepNum = () => parseFloat(input.step) || 1;
-    const clamp = (v) => {
-      const min = parseFloat(input.min);
-      const max = parseFloat(input.max);
-      if (!isNaN(min)) v = Math.max(min, v);
-      if (!isNaN(max)) v = Math.min(max, v);
-      return v;
-    };
-    const snap = (v) => {
-      const dec = (input.step || "1").toString().split(".")[1]?.length || 0;
-      return parseFloat(v.toFixed(dec));
-    };
-
-    // Hold-to-repeat
-    let holdTimer = null,
-      holdInterval = null;
-    const startHold = (dir) => {
-      const tick = () => {
-        let v = parseFloat(input.value) || 0;
-        v = snap(clamp(v + dir * stepNum()));
-        input.value = v;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-        input.dispatchEvent(new Event("change", { bubbles: true }));
+        return v;
       };
-      tick();
-      holdTimer = setTimeout(() => {
-        holdInterval = setInterval(tick, 50);
-      }, 400);
-    };
-    const stopHold = () => {
-      clearTimeout(holdTimer);
-      clearInterval(holdInterval);
-      holdTimer = holdInterval = null;
-    };
+      const snap = (v) => {
+        const dec = (input.step || "1").toString().split(".")[1]?.length || 0;
+        return parseFloat(v.toFixed(dec));
+      };
 
-    btnUp.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      startHold(1);
-    });
-    btnDn.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      startHold(-1);
-    });
-    btnUp.addEventListener("mouseup", stopHold);
-    btnDn.addEventListener("mouseup", stopHold);
-    btnUp.addEventListener("mouseleave", stopHold);
-    btnDn.addEventListener("mouseleave", stopHold);
-    btnUp.addEventListener("click", (e) => e.preventDefault());
-    btnDn.addEventListener("click", (e) => e.preventDefault());
+      // Hold-to-repeat
+      let holdTimer = null,
+        holdInterval = null;
+      const startHold = (dir) => {
+        const tick = () => {
+          let v = parseFloat(input.value) || 0;
+          v = snap(clamp(v + dir * stepNum()));
+          input.value = v;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        };
+        tick();
+        holdTimer = setTimeout(() => {
+          holdInterval = setInterval(tick, 50);
+        }, 400);
+      };
+      const stopHold = () => {
+        clearTimeout(holdTimer);
+        clearInterval(holdInterval);
+        holdTimer = holdInterval = null;
+      };
 
-    arrows.appendChild(btnUp);
-    arrows.appendChild(btnDn);
-    wrap.appendChild(arrows);
-  });
+      btnUp.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        startHold(1);
+      });
+      btnDn.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        startHold(-1);
+      });
+      btnUp.addEventListener("mouseup", stopHold);
+      btnDn.addEventListener("mouseup", stopHold);
+      btnUp.addEventListener("mouseleave", stopHold);
+      btnDn.addEventListener("mouseleave", stopHold);
+      btnUp.addEventListener("click", (e) => e.preventDefault());
+      btnDn.addEventListener("click", (e) => e.preventDefault());
+
+      arrows.appendChild(btnUp);
+      arrows.appendChild(btnDn);
+      wrap.appendChild(arrows);
+    });
 }
 
 /* ================================================================
@@ -4245,7 +4483,8 @@ function initShapeZone() {
       ((e.clientX - rect.left - rect.width / 2) * (canvas.width / rect.width)) /
       (DPI_CURRENT / 25.4);
     const dyMm =
-      ((e.clientY - rect.top - rect.height / 2) * (canvas.height / rect.height)) /
+      ((e.clientY - rect.top - rect.height / 2) *
+        (canvas.height / rect.height)) /
       (DPI_CURRENT / 25.4);
     const l = makeLayer({
       name: "Shape",
@@ -4325,7 +4564,12 @@ function init() {
   });
 
   document.getElementById("addLine").addEventListener("click", () => {
-    const l = makeLayer({ name: "NEW TEXT", text: "NEW TEXT", mode: "straight", offsetYmm: 6 });
+    const l = makeLayer({
+      name: "NEW TEXT",
+      text: "NEW TEXT",
+      mode: "straight",
+      offsetYmm: 6,
+    });
     cfg.layers.push(l);
     selId = l.id;
     selectedIds = new Set([selId]);
@@ -4470,13 +4714,23 @@ function init() {
   });
 
   /* Zoom controls */
-  document.getElementById("zoomIn").addEventListener("click", () => setZoom(cfg.editorZoom * 1.2));
-  document.getElementById("zoomOut").addEventListener("click", () => setZoom(cfg.editorZoom / 1.2));
-  document.getElementById("zoom100").addEventListener("click", () => setZoom(1, true));
+  document
+    .getElementById("zoomIn")
+    .addEventListener("click", () => setZoom(cfg.editorZoom * 1.2));
+  document
+    .getElementById("zoomOut")
+    .addEventListener("click", () => setZoom(cfg.editorZoom / 1.2));
+  document
+    .getElementById("zoom100")
+    .addEventListener("click", () => setZoom(1, true));
   document.getElementById("zoomFit").addEventListener("click", fitView);
   document.getElementById("zoomReset")?.addEventListener("click", resetView);
-  document.getElementById("zoomDouble")?.addEventListener("click", () => setZoom(2, true));
-  document.getElementById("zoomHalf")?.addEventListener("click", () => setZoom(0.5, true));
+  document
+    .getElementById("zoomDouble")
+    ?.addEventListener("click", () => setZoom(2, true));
+  document
+    .getElementById("zoomHalf")
+    ?.addEventListener("click", () => setZoom(0.5, true));
 
   /* Save button */
   document.getElementById("saveBtn").addEventListener("click", () => {
@@ -4489,13 +4743,17 @@ function init() {
 
   /* Shortcuts modal */
   document.getElementById("helpBtn").addEventListener("click", toggleShortcuts);
-  document.getElementById("shortcutsClose").addEventListener("click", toggleShortcuts);
+  document
+    .getElementById("shortcutsClose")
+    .addEventListener("click", toggleShortcuts);
   document.getElementById("shortcutsOverlay").addEventListener("click", (e) => {
     if (e.target === e.currentTarget) toggleShortcuts();
   });
 
   /* Guide toggle */
-  document.getElementById("showGuides").addEventListener("change", () => render());
+  document
+    .getElementById("showGuides")
+    .addEventListener("change", () => render());
 
   /* Sidebar collapse toggle */
   const workArea = document.querySelector(".work-area");
@@ -4513,7 +4771,8 @@ function init() {
   try {
     sbStart = localStorage.getItem(SB_KEY) === "1";
   } catch {}
-  if (window.innerWidth <= 720 && localStorage.getItem(SB_KEY) === null) sbStart = true;
+  if (window.innerWidth <= 720 && localStorage.getItem(SB_KEY) === null)
+    sbStart = true;
   applySidebar(sbStart);
   sbToggle.addEventListener("click", () => {
     applySidebar(!workArea.classList.contains("sidebar-collapsed"));
@@ -4522,7 +4781,13 @@ function init() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "[" && !e.ctrlKey && !e.metaKey && !e.altKey) {
       const t = e.target;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      )
+        return;
       e.preventDefault();
       applySidebar(!workArea.classList.contains("sidebar-collapsed"));
     }
@@ -4556,26 +4821,34 @@ function init() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "]" && !e.ctrlKey && !e.metaKey && !e.altKey) {
       const t = e.target;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      )
+        return;
       e.preventDefault();
       applyRightPanel(!rightPanel.classList.contains("rep-collapsed"));
     }
   });
 
   /* Topbar effect toggles — open effects panel on click */
-  document.querySelectorAll(".tb-eff-toggle input[type=checkbox]").forEach((cb) => {
-    const key = cb.dataset.eff;
-    if (key && cfg[key] !== undefined) cb.checked = Boolean(cfg[key]);
-    cb.addEventListener("change", () => {
-      const k = cb.dataset.eff;
-      if (k) {
-        cfg[k] = cb.checked;
-      }
-      _showEffects = true;
-      renderLeftSidebar();
-      renderD();
+  document
+    .querySelectorAll(".tb-eff-toggle input[type=checkbox]")
+    .forEach((cb) => {
+      const key = cb.dataset.eff;
+      if (key && cfg[key] !== undefined) cb.checked = Boolean(cfg[key]);
+      cb.addEventListener("change", () => {
+        const k = cb.dataset.eff;
+        if (k) {
+          cfg[k] = cb.checked;
+        }
+        _showEffects = true;
+        renderLeftSidebar();
+        renderD();
+      });
     });
-  });
 
   /* Color combo: click hex text → open picker, picker change → update hex text */
   const hexEl = document.getElementById("inkColorHex");
@@ -4616,7 +4889,11 @@ init();
   const STORAGE = "stamp.editorPanelPos";
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE) || "null");
-    if (saved && typeof saved.left === "number" && typeof saved.top === "number") {
+    if (
+      saved &&
+      typeof saved.left === "number" &&
+      typeof saved.top === "number"
+    ) {
       applyPos(saved.left, saved.top);
     }
   } catch (_) {}
@@ -4682,6 +4959,7 @@ init();
   header.addEventListener("pointercancel", end);
 
   window.addEventListener("resize", () => {
-    if (panel.style.left) applyPos(parseFloat(panel.style.left), parseFloat(panel.style.top));
+    if (panel.style.left)
+      applyPos(parseFloat(panel.style.left), parseFloat(panel.style.top));
   });
 })();

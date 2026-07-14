@@ -24,25 +24,64 @@
 
         <div class="tb-sep"></div>
 
-        <input type="file" id="importConfigFile" accept=".json" style="display: none" />
+        <input
+          type="file"
+          id="importConfigFile"
+          accept=".json"
+          style="display: none"
+        />
 
         <!-- (Undo/Redo/Panel toggle moved to the right cluster) -->
 
         <!-- Shape icons (draggable to canvas) -->
         <div class="tb-section tb-shapes" id="tbShapeBar">
           <div class="ls-zone-grid" id="lsShapeGrid">
-            <div class="ls-zone-item" data-add-shape="star" title="Star" draggable="true">★</div>
-            <div class="ls-zone-item" data-add-shape="pentagon" title="Pentagon" draggable="true">
+            <div
+              class="ls-zone-item"
+              data-add-shape="star"
+              title="Star"
+              draggable="true"
+            >
+              ★
+            </div>
+            <div
+              class="ls-zone-item"
+              data-add-shape="pentagon"
+              title="Pentagon"
+              draggable="true"
+            >
               ⬠
             </div>
-            <div class="ls-zone-item" data-add-shape="hexagon" title="Hexagon" draggable="true">
+            <div
+              class="ls-zone-item"
+              data-add-shape="hexagon"
+              title="Hexagon"
+              draggable="true"
+            >
               ⬡
             </div>
-            <div class="ls-zone-item" data-add-shape="diamond" title="Diamond" draggable="true">
+            <div
+              class="ls-zone-item"
+              data-add-shape="diamond"
+              title="Diamond"
+              draggable="true"
+            >
               ◆
             </div>
-            <div class="ls-zone-item" data-add-shape="cross" title="Cross" draggable="true">✚</div>
-            <div class="ls-zone-item" data-add-shape="circle" title="Circle" draggable="true">
+            <div
+              class="ls-zone-item"
+              data-add-shape="cross"
+              title="Cross"
+              draggable="true"
+            >
+              ✚
+            </div>
+            <div
+              class="ls-zone-item"
+              data-add-shape="circle"
+              title="Circle"
+              draggable="true"
+            >
               ●
             </div>
           </div>
@@ -68,13 +107,16 @@
           </div>
           <div class="tb-effects-group">
             <label class="tb-eff-toggle"
-              ><input type="checkbox" data-eff="inkBleed" /> <span>Bleed</span></label
+              ><input type="checkbox" data-eff="inkBleed" />
+              <span>Bleed</span></label
             >
             <label class="tb-eff-toggle"
-              ><input type="checkbox" data-eff="grungeTexture" /> <span>Grunge</span></label
+              ><input type="checkbox" data-eff="grungeTexture" />
+              <span>Grunge</span></label
             >
             <label class="tb-eff-toggle"
-              ><input type="checkbox" data-eff="rotationJitter" /> <span>Jitter</span></label
+              ><input type="checkbox" data-eff="rotationJitter" />
+              <span>Jitter</span></label
             >
           </div>
         </div>
@@ -95,7 +137,11 @@
               <circle cx="8" cy="11.3" r=".5" fill="currentColor" />
             </svg>
           </button>
-          <button class="tb-icon tb-icon--danger" id="resetBtn" title="Reset everything">
+          <button
+            class="tb-icon tb-icon--danger"
+            id="resetBtn"
+            title="Reset everything"
+          >
             <svg
               viewBox="0 0 16 16"
               width="14"
@@ -202,12 +248,16 @@
                   stroke-width="1.5"
                   stroke-linecap="round"
                 >
-                  <path d="M13 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h7l3 3v9a1 1 0 0 1-1 1z" />
+                  <path
+                    d="M13 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h7l3 3v9a1 1 0 0 1-1 1z"
+                  />
                   <path d="M9 2v3h3" />
                 </svg>
                 Save (Ctrl+S)
               </div>
-              <div class="tb-preset-item" data-action="save">+ Save Current as Preset…</div>
+              <div class="tb-preset-item" data-action="save">
+                + Save Current as Preset…
+              </div>
               <div class="tb-preset-item" data-action="exportConfig">
                 <svg
                   viewBox="0 0 16 16"
@@ -249,8 +299,13 @@
               >
                 Presets
               </div>
-              <div id="presetsList" style="max-height: 180px; overflow-y: auto"></div>
-              <div class="tb-preset-item" data-action="manage">Manage Presets…</div>
+              <div
+                id="presetsList"
+                style="max-height: 180px; overflow-y: auto"
+              ></div>
+              <div class="tb-preset-item" data-action="manage">
+                Manage Presets…
+              </div>
               <div class="tb-preset-sep"></div>
               <div
                 class="tb-preset-label"
@@ -264,9 +319,15 @@
               >
                 Export image
               </div>
-              <div class="tb-preset-item" data-action="pngTransparent">PNG · Transparent</div>
-              <div class="tb-preset-item" data-action="pngWhite">PNG · White BG</div>
-              <div class="tb-preset-item" data-action="svgExport">SVG · Vector</div>
+              <div class="tb-preset-item" data-action="pngTransparent">
+                PNG · Transparent
+              </div>
+              <div class="tb-preset-item" data-action="pngWhite">
+                PNG · White BG
+              </div>
+              <div class="tb-preset-item" data-action="svgExport">
+                SVG · Vector
+              </div>
               <div class="tb-preset-sep"></div>
               <div
                 class="tb-preset-label"
@@ -281,7 +342,12 @@
                 Resolution
               </div>
               <div class="tb-preset-item" style="padding: 4px 12px 10px">
-                <select data-bind="dpi" id="dpiSelect" class="select-control" style="width: 100%">
+                <select
+                  data-bind="dpi"
+                  id="dpiSelect"
+                  class="select-control"
+                  style="width: 100%"
+                >
                   <option value="72">72 DPI · screen</option>
                   <option value="150">150 DPI · web</option>
                   <option value="300" selected>300 DPI · print</option>
@@ -455,7 +521,9 @@
                       stroke-width="1.5"
                       stroke-linejoin="round"
                     >
-                      <path d="M8 2l1.8 3.6 4 .6-2.9 2.8.7 4L8 11l-3.6 2 .7-4L2.2 6.2l4-.6z" />
+                      <path
+                        d="M8 2l1.8 3.6 4 .6-2.9 2.8.7 4L8 11l-3.6 2 .7-4L2.2 6.2l4-.6z"
+                      />
                     </svg>
                     <span>Shape</span>
                   </button>
@@ -512,7 +580,11 @@
               </div>
               <div class="ts-body" data-ts-body="stampShape">
                 <div class="ls-tpl-chips">
-                  <button class="tpl-chip" data-template="doubleRing" title="Two concentric rings">
+                  <button
+                    class="tpl-chip"
+                    data-template="doubleRing"
+                    title="Two concentric rings"
+                  >
                     <svg viewBox="0 0 40 40" class="tpl-thumb">
                       <circle
                         cx="20"
@@ -564,7 +636,11 @@
                       />
                     </svg>
                   </button>
-                  <button class="tpl-chip" data-template="oval" title="Horizontal oval">
+                  <button
+                    class="tpl-chip"
+                    data-template="oval"
+                    title="Horizontal oval"
+                  >
                     <svg viewBox="0 0 40 40" class="tpl-thumb">
                       <ellipse
                         cx="20"
@@ -586,7 +662,11 @@
                       />
                     </svg>
                   </button>
-                  <button class="tpl-chip" data-template="rectangle" title="Rectangle">
+                  <button
+                    class="tpl-chip"
+                    data-template="rectangle"
+                    title="Rectangle"
+                  >
                     <svg viewBox="0 0 40 40" class="tpl-thumb">
                       <rect
                         x="3"
@@ -610,7 +690,11 @@
                       />
                     </svg>
                   </button>
-                  <button class="tpl-chip" data-template="square" title="Square">
+                  <button
+                    class="tpl-chip"
+                    data-template="square"
+                    title="Square"
+                  >
                     <svg viewBox="0 0 40 40" class="tpl-thumb">
                       <rect
                         x="6"
@@ -624,7 +708,11 @@
                       />
                     </svg>
                   </button>
-                  <button class="tpl-chip" data-template="minimalCircle" title="Minimal thin ring">
+                  <button
+                    class="tpl-chip"
+                    data-template="minimalCircle"
+                    title="Minimal thin ring"
+                  >
                     <svg viewBox="0 0 40 40" class="tpl-thumb">
                       <circle
                         cx="20"
@@ -716,7 +804,11 @@
         </section>
 
         <!-- ─── FLOATING RIGHT EDITOR PANEL ─── -->
-        <aside class="right-editor-panel" id="rightEditorPanel" aria-label="Editor">
+        <aside
+          class="right-editor-panel"
+          id="rightEditorPanel"
+          aria-label="Editor"
+        >
           <div class="rep-header">
             <span class="rep-title">Editor</span>
             <button class="rep-close" id="rightPanelClose">&times;</button>
@@ -737,22 +829,50 @@
       <div class="shortcuts-modal">
         <div class="shortcuts-header">
           <span class="prop-label">Keyboard Shortcuts</span>
-          <button class="shortcuts-close" id="shortcutsClose" aria-label="Close">&times;</button>
+          <button
+            class="shortcuts-close"
+            id="shortcutsClose"
+            aria-label="Close"
+          >
+            &times;
+          </button>
         </div>
         <div class="shortcuts-body">
-          <div class="shortcut-row"><kbd>Click</kbd><span>Select layer on canvas</span></div>
-          <div class="shortcut-row"><kbd>Drag</kbd><span>Move selected layer</span></div>
-          <div class="shortcut-row"><kbd>Ctrl+Click</kbd><span>Toggle multi-select</span></div>
-          <div class="shortcut-row"><kbd>F</kbd><span>Fit stamp to viewport</span></div>
-          <div class="shortcut-row"><kbd>0</kbd><span>Reset zoom to 100%</span></div>
-          <div class="shortcut-row"><kbd>+</kbd> / <kbd>-</kbd><span>Zoom in / out</span></div>
-          <div class="shortcut-row"><kbd>G</kbd><span>Toggle alignment guides</span></div>
-          <div class="shortcut-row"><kbd>Ctrl+S</kbd><span>Save project</span></div>
-          <div class="shortcut-row"><kbd>Ctrl+A</kbd><span>Select all layers</span></div>
+          <div class="shortcut-row">
+            <kbd>Click</kbd><span>Select layer on canvas</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Drag</kbd><span>Move selected layer</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl+Click</kbd><span>Toggle multi-select</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>F</kbd><span>Fit stamp to viewport</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>0</kbd><span>Reset zoom to 100%</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>+</kbd> / <kbd>-</kbd><span>Zoom in / out</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>G</kbd><span>Toggle alignment guides</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl+S</kbd><span>Save project</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>Ctrl+A</kbd><span>Select all layers</span>
+          </div>
           <div class="shortcut-row"><kbd>Ctrl+Z</kbd><span>Undo</span></div>
           <div class="shortcut-row"><kbd>Ctrl+Y</kbd><span>Redo</span></div>
-          <div class="shortcut-row"><kbd>Delete</kbd><span>Delete selected layer</span></div>
-          <div class="shortcut-row"><kbd>?</kbd><span>Toggle this panel</span></div>
+          <div class="shortcut-row">
+            <kbd>Delete</kbd><span>Delete selected layer</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd>?</kbd><span>Toggle this panel</span>
+          </div>
         </div>
       </div>
     </div>
