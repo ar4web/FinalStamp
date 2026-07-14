@@ -579,7 +579,7 @@
               <button class="rep-action-btn" id="repUndoBtn" title="Undo (Ctrl+Z)">&#8617;</button>
               <button class="rep-action-btn" id="repRedoBtn" title="Redo (Ctrl+Y)">&#8618;</button>
             </div>
-            <span class="rep-title"></span>
+            <span class="rep-title">STAMP SETTINGS</span>
             <div class="rep-actions">
               <button class="rep-nav-btn" id="repPrevLayer" title="Previous layer">&#9650;</button>
               <button class="rep-nav-btn" id="repNextLayer" title="Next layer">&#9660;</button>
@@ -587,6 +587,326 @@
             </div>
           </div>
           <div class="rep-body" id="repBody"></div>
+        </aside>
+
+        <!-- Separate Stamp Settings Panel -->
+        <aside
+          class="right-editor-panel stamp-settings-panel"
+          id="stampSettingsPanel"
+          aria-label="Stamp Settings"
+          style="display: none;"
+        >
+          <div class="rep-header">
+            <div class="rep-actions">
+              <button class="rep-action-btn" id="stampSettingsUndoBtn" title="Undo (Ctrl+Z)">&#8617;</button>
+              <button class="rep-action-btn" id="stampSettingsRedoBtn" title="Redo (Ctrl+Y)">&#8618;</button>
+            </div>
+            <span class="rep-title">STAMP SETTINGS</span>
+            <div class="rep-actions">
+              <button class="rep-close" id="stampSettingsCloseBtn">&times;</button>
+            </div>
+          </div>
+          <div class="rep-body" id="stampSettingsBody">
+            <div class="properties-section">
+              <div class="prop-group">
+                <div class="prop-label">STAMP</div>
+                <div class="prop-row">
+                  <div class="prop-item">
+                    <div class="prop-label-inner">Width</div>
+                    <div class="prop-controls">
+                      <button class="prop-btn" id="widthDecBtn" title="Decrease">-</button>
+                      <input type="text" class="prop-input" id="widthInput" value="62" />
+                      <button class="prop-btn" id="widthIncBtn" title="Increase">+</button>
+                      <span class="prop-unit">px</span>
+                    </div>
+                  </div>
+                  <div class="prop-item">
+                    <div class="prop-label-inner">Height</div>
+                    <div class="prop-controls">
+                      <button class="prop-btn" id="heightDecBtn" title="Decrease">-</button>
+                      <input type="text" class="prop-input" id="heightInput" value="36" />
+                      <button class="prop-btn" id="heightIncBtn" title="Increase">+</button>
+                      <span class="prop-unit">px</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="prop-row">
+                  <div class="prop-item">
+                    <div class="prop-label-inner">Thickness</div>
+                    <div class="prop-controls">
+                      <button class="prop-btn" id="thicknessDecBtn" title="Decrease">-</button>
+                      <input type="text" class="prop-input" id="thicknessInput" value="16" />
+                      <button class="prop-btn" id="thicknessIncBtn" title="Increase">+</button>
+                      <span class="prop-unit">px</span>
+                    </div>
+                  </div>
+                  <div class="prop-item">
+                    <div class="prop-label-inner">Center</div>
+                    <div class="prop-controls">
+                      <button class="prop-btn" id="centerDecBtn" title="Decrease">-</button>
+                      <input type="text" class="prop-input" id="centerInput" value="0" />
+                      <button class="prop-btn" id="centerIncBtn" title="Increase">+</button>
+                      <span class="prop-unit">%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="prop-row">
+                  <div class="prop-item full-width">
+                    <div class="prop-label-inner">Offset</div>
+                    <div class="prop-controls">
+                      <div class="prop-pos-row">
+                        <div class="prop-pos-label">X</div>
+                        <button class="prop-pos-btn" id="offsetXDecBtn">-</button>
+                        <input type="text" class="prop-pos-input" id="offsetXInput" value="0" />
+                        <button class="prop-pos-btn" id="offsetXIncBtn">+</button>
+                        <span class="prop-pos-unit">px</span>
+                      </div>
+                      <div class="prop-pos-row">
+                        <div class="prop-pos-label">Y</div>
+                        <button class="prop-pos-btn" id="offsetYDecBtn">-</button>
+                        <input type="text" class="prop-pos-input" id="offsetYInput" value="0" />
+                        <button class="prop-pos-btn" id="offsetYIncBtn">+</button>
+                        <span class="prop-pos-unit">px</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="prop-group">
+                <div class="prop-label">RING COLORS</div>
+                <div class="prop-row">
+                  <div class="prop-item">
+                    <div class="prop-color-swatch" style="background: #4f46e5;"></div>
+                    <div class="prop-color-label">Outer</div>
+                  </div>
+                  <div class="prop-item">
+                    <div class="prop-color-swatch" style="background: #6366f1;"></div>
+                    <div class="prop-color-label">Middle</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Separate Position Panel -->
+        <aside
+          class="right-editor-panel position-panel"
+          id="positionPanel"
+          aria-label="Position"
+          style="display: none;"
+        >
+          <div class="rep-header">
+            <div class="rep-actions">
+              <button class="rep-action-btn" id="positionUndoBtn" title="Undo (Ctrl+Z)">&#8617;</button>
+              <button class="rep-action-btn" id="positionRedoBtn" title="Redo (Ctrl+Y)">&#8618;</button>
+            </div>
+            <span class="rep-title">POSITION</span>
+            <div class="rep-actions">
+              <button class="rep-close" id="positionCloseBtn">&times;</button>
+            </div>
+          </div>
+          <div class="rep-body" id="positionBody">
+            <div class="prop-tabs">
+              <div class="prop-tab active" data-tab="arrange">Arrange</div>
+              <div class="prop-tab" data-tab="layers">Layers</div>
+            </div>
+            <div class="prop-tab-content active" id="arrangeTab">
+              <div class="prop-group">
+                <div class="prop-label">Arrange</div>
+                <div class="arrange-grid">
+                  <button class="arrange-btn" id="btnForward" title="Forward (↑)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <path d="M8 2v12M2 8h12" />
+                    </svg>
+                    <span>Forward</span>
+                  </button>
+                  <button class="arrange-btn" id="btnBackward" title="Backward (↓)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <path d="M8 2v12M12 8H2" />
+                    </svg>
+                    <span>Backward</span>
+                  </button>
+                  <button class="arrange-btn" id="btnToFront" title="To front (⬆)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <path d="M12 2H2v12h10z" />
+                    </svg>
+                    <span>To front</span>
+                  </button>
+                  <button class="arrange-btn" id="btnToBack" title="To back (⬇)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <path d="M14 14H2V2h12z" />
+                    </svg>
+                    <span>To back</span>
+                  </button>
+                </div>
+              </div>
+              <div class="prop-group">
+                <div class="prop-label">Align to page</div>
+                <div class="align-grid">
+                  <button class="align-btn" id="btnTop" title="Top (⬆)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="4" y="2" width="8" height="12" rx="1" />
+                    </svg>
+                  </button>
+                  <button class="align-btn" id="btnLeft" title="Left (◀)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="2" y="4" width="12" height="8" rx="1" />
+                    </svg>
+                  </button>
+                  <button class="align-btn" id="btnCenter" title="Center (◆)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="3" y="3" width="10" height="10" rx="2" />
+                    </svg>
+                  </button>
+                  <button class="align-btn" id="btnMiddle" title="Middle (▶)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="4" y="4" width="8" height="8" rx="2" />
+                    </svg>
+                  </button>
+                  <button class="align-btn" id="btnBottom" title="Bottom (⬇)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="4" y="8" width="8" height="4" rx="1" />
+                    </svg>
+                  </button>
+                  <button class="align-btn" id="btnRight" title="Right (▶)">
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                      <rect x="8" y="4" width="4" height="8" rx="1" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="prop-group">
+                <div class="prop-label">Advanced</div>
+                <div class="advanced-grid">
+                  <div class="advanced-item">
+                    <div class="advanced-label">Width</div>
+                    <div class="advanced-value">38.9 px</div>
+                  </div>
+                  <div class="advanced-item">
+                    <div class="advanced-label">Height</div>
+                    <div class="advanced-value">415.4 px</div>
+                  </div>
+                  <div class="advanced-item">
+                    <div class="advanced-label">Ratio</div>
+                    <div class="advanced-value">
+                      <svg class="advanced-lock" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M8 5v6m-3-3h6" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="advanced-item">
+                    <div class="advanced-label">X</div>
+                    <div class="advanced-value">687 px</div>
+                  </div>
+                  <div class="advanced-item">
+                    <div class="advanced-label">Y</div>
+                    <div class="advanced-value">875.1 px</div>
+                  </div>
+                  <div class="advanced-item">
+                    <div class="advanced-label">Rotate</div>
+                    <div class="advanced-value">90°</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="prop-tab-content" id="layersTab">
+              <div class="layers-list">
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <circle cx="7" cy="7" r="5.5" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">Oval</div>
+                  <div class="layer-badge">SHAPE</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M7 2v4a3 3 0 0 1-3 3H2a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3z" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">Ring 1 · outer</div>
+                  <div class="layer-badge">RING</div>
+                  <div class="layer-value">[1.8]</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M7 2v4a3 3 0 0 1-3 3H2a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3z" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">Ring 2 · middle</div>
+                  <div class="layer-badge">RING</div>
+                  <div class="layer-value">[0.8]</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M2 11a6 6 0 0 1 12 0" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">الموارد المـ...</div>
+                  <div class="layer-badge">ARC</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M2 11a6 6 0 0 1 12 0" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">LIMITED RE...</div>
+                  <div class="layer-badge">ARC</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="layer-item">
+                  <div class="layer-icon">
+                    <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M2 8h12" />
+                    </svg>
+                  </div>
+                  <div class="layer-name">1234567890</div>
+                  <div class="layer-badge">LINE</div>
+                  <div class="layer-visibility">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="currentColor">
+                      <path d="M5.5 11l2-9 2 9z" />
+                      <path d="M7 7v5" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
