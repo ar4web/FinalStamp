@@ -651,7 +651,7 @@ const multiSelected = () => cfg.layers.filter((l) => selectedIds.has(l.id));
 function selectAllLayers() {
   selectedIds = new Set(cfg.layers.map((l) => l.id));
   if (cfg.layers.length > 0) selId = cfg.layers[0].id;
-  selShape = true;
+  selShape = false;
   selRing = null;
   buildLayerList();
   buildLayerProps();
@@ -1163,11 +1163,11 @@ function drawEditorOverlays() {
       ctx.setLineDash([6, 4]);
       ctx.beginPath();
       if (g.type === "v") {
-        const x = cx + g.mm * ppmm;
+        const x = scx + g.mm * ppmm;
         ctx.moveTo(x, 0);
         ctx.lineTo(x, canvas.height);
       } else {
-        const y = cy + g.mm * ppmm;
+        const y = scy + g.mm * ppmm;
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
       }
@@ -3225,7 +3225,7 @@ function bindTextContextInputs(ctx, l) {
         l.text = v;
         if (l._autoName) l.name = autoLayerName(l);
         buildLayerList();
-        const head = document.querySelector("#lsContext .ls-editor-name");
+        const head = ctx.querySelector(".ls-editor-name");
         if (head && document.activeElement !== head) head.textContent = l.name;
       } else if (key === "flip") {
         l.flip = input.checked;
@@ -3619,9 +3619,15 @@ function buildLayerProps() {
 function syncDPI() {
   DPI_CURRENT = cfg.dpi || 300;
   const px = (DPI_CURRENT / 25.4).toFixed(2);
-  const el = document.getElementById("exportNote");
-  if (el)
-    el.textContent = `${DPI_CURRENT} DPI · 1 mm = ${px} px · print-ready output`;
+  let el = document.getElementById("exportNote");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "exportNote";
+    el.className = "export-note";
+    const target = document.querySelector("#toolRailPanel .export-section") || document.getElementById("toolRailPanel");
+    if (target) target.appendChild(el);
+  }
+  el.textContent = `${DPI_CURRENT} DPI · 1 mm = ${px} px · print-ready output`;
   if (cfg.dpi !== undefined) {
     document
       .querySelectorAll('[data-bind="dpi"]')
@@ -3731,6 +3737,11 @@ function exportSVG() {
   const insetPx = mmPx(cfg.outerRingThickness + cfg.ringGap);
   const cr = mmPx(cfg.cornerRadius).toFixed(2);
   const rv = cfg.ringVisible || {};
+  const rc = cfg.ringColors || {};
+  const cOuterSvg = rc.outer || color;
+  const cInnerSvg = rc.inner || color;
+  const cInner2Svg = rc.inner2 || color;
+  const cCenterSvg = rc.center || color;
 
   let shapes = "",
     defs = "",
@@ -3739,22 +3750,22 @@ function exportSVG() {
   // ── Geometry SVG ──────────────────────────────────────────────
   if (cfg.shape === "rectangle") {
     const o = mmPx(cfg.outerRingThickness);
-    shapes += `<rect x="${(scx - rx + o / 2).toFixed(2)}" y="${(scy - ry + o / 2).toFixed(2)}" width="${(stampW - o).toFixed(2)}" height="${(stampH - o).toFixed(2)}" rx="${cr}" fill="none" stroke="${color}" stroke-width="${o.toFixed(2)}" opacity="${op}"/>`;
+    shapes += `<rect x="${(scx - rx + o / 2).toFixed(2)}" y="${(scy - ry + o / 2).toFixed(2)}" width="${(stampW - o).toFixed(2)}" height="${(stampH - o).toFixed(2)}" rx="${cr}" fill="none" stroke="${cOuterSvg}" stroke-width="${o.toFixed(2)}" opacity="${op}"/>`;
     if (cfg.rings >= 2 && cfg.innerRingThickness > 0 && rv.inner !== false) {
       const inset = mmPx(cfg.outerRingThickness + cfg.ringGap);
       const il = mmPx(cfg.innerRingThickness);
       const iw = stampW - inset * 2 - il,
         ih = stampH - inset * 2 - il;
       if (iw > 0 && ih > 0) {
-        shapes += `<rect x="${(scx - rx + inset + il / 2).toFixed(2)}" y="${(scy - ry + inset + il / 2).toFixed(2)}" width="${iw.toFixed(2)}" height="${ih.toFixed(2)}" rx="${cr}" fill="none" stroke="${color}" stroke-width="${il.toFixed(2)}" opacity="${op}"/>`;
+        shapes += `<rect x="${(scx - rx + inset + il / 2).toFixed(2)}" y="${(scy - ry + inset + il / 2).toFixed(2)}" width="${iw.toFixed(2)}" height="${ih.toFixed(2)}" rx="${cr}" fill="none" stroke="${cInnerSvg}" stroke-width="${il.toFixed(2)}" opacity="${op}"/>`;
       }
     }
   } else {
     const o = mmPx(cfg.outerRingThickness);
-    shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - o / 2).toFixed(2)}" ry="${(ry - o / 2).toFixed(2)}" fill="none" stroke="${color}" stroke-width="${o.toFixed(2)}" opacity="${op}"/>`;
+    shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - o / 2).toFixed(2)}" ry="${(ry - o / 2).toFixed(2)}" fill="none" stroke="${cOuterSvg}" stroke-width="${o.toFixed(2)}" opacity="${op}"/>`;
     if (cfg.rings >= 2 && cfg.innerRingThickness > 0 && rv.inner !== false) {
       const il = mmPx(cfg.innerRingThickness);
-      shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - insetPx - il / 2).toFixed(2)}" ry="${(ry - insetPx - il / 2).toFixed(2)}" fill="none" stroke="${color}" stroke-width="${il.toFixed(2)}" opacity="${op}"/>`;
+      shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - insetPx - il / 2).toFixed(2)}" ry="${(ry - insetPx - il / 2).toFixed(2)}" fill="none" stroke="${cInnerSvg}" stroke-width="${il.toFixed(2)}" opacity="${op}"/>`;
     }
     if (cfg.rings >= 3 && cfg.innerRing2Thickness > 0 && rv.inner2 !== false) {
       const inset2 = mmPx(
@@ -3764,12 +3775,12 @@ function exportSVG() {
           cfg.ringGap,
       );
       const il2 = mmPx(cfg.innerRing2Thickness);
-      shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - inset2).toFixed(2)}" ry="${(ry - inset2).toFixed(2)}" fill="none" stroke="${color}" stroke-width="${il2.toFixed(2)}" opacity="${op}"/>`;
+      shapes += `<ellipse cx="${scx}" cy="${scy}" rx="${(rx - inset2).toFixed(2)}" ry="${(ry - inset2).toFixed(2)}" fill="none" stroke="${cInner2Svg}" stroke-width="${il2.toFixed(2)}" opacity="${op}"/>`;
     }
     if (cfg.centerAreaDiameter > 0) {
       const crd = mmPx(cfg.centerAreaDiameter / 2);
       const ilc = Math.max(mmPx(0.4), mmPx(cfg.innerRingThickness || 0.8));
-      shapes += `<circle cx="${scx}" cy="${scy}" r="${crd.toFixed(2)}" fill="none" stroke="${color}" stroke-width="${ilc.toFixed(2)}" opacity="${op}"/>`;
+      shapes += `<circle cx="${scx}" cy="${scy}" r="${crd.toFixed(2)}" fill="none" stroke="${cCenterSvg}" stroke-width="${ilc.toFixed(2)}" opacity="${op}"/>`;
     }
   }
 
@@ -3785,7 +3796,8 @@ function exportSVG() {
       l.scaleX !== 1 || l.scaleY !== 1
         ? ` transform="scale(${l.scaleX || 1},${l.scaleY || 1})"`
         : "";
-    const common = `font-family="${escXml(l.font)}" font-size="${fs}" font-weight="${safeWeight(l.font, l.weight)}" fill="${color}" opacity="${op}" letter-spacing="${l.letterSpacing}"${ws} direction="${dir}"${bidi}${scl}`;
+    const lColor = l.color || color;
+    const common = `font-family="${escXml(l.font)}" font-size="${fs}" font-weight="${safeWeight(l.font, l.weight)}" fill="${lColor}" opacity="${op}" letter-spacing="${l.letterSpacing}"${ws} direction="${dir}"${bidi}${scl}`;
 
     if (l.mode === "curved") {
       const pid = "tp" + i;
@@ -3932,6 +3944,7 @@ function initShapePicker() {
   btn.addEventListener("click", () => {
     const l = makeLayer({
       name: "Shape",
+      type: "shape",
       text: "★",
       font: "Noto Sans",
       sizeMm: 5,
@@ -4436,6 +4449,7 @@ function initShapeZone() {
       const sym = SHAPE_SYMBOLS[type] || "●";
       const l = makeLayer({
         name: "Shape",
+        type: "shape",
         text: sym,
         font: "Noto Sans",
         sizeMm: 5,
@@ -4488,6 +4502,7 @@ function initShapeZone() {
       (DPI_CURRENT / 25.4);
     const l = makeLayer({
       name: "Shape",
+      type: "shape",
       text: sym,
       font: "Noto Sans",
       sizeMm: 5,
@@ -4580,22 +4595,8 @@ function init() {
     openSection("text");
   });
 
-  /* Export — most items are inside the dropdown (wired by initExportDropdown).
-     Guard the direct-ID lookups so missing legacy buttons don't crash init. */
-  const _on = (id, ev, fn) => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener(ev, fn);
-  };
-  _on("pngTransparent", "click", () => exportPNG(false));
-  _on("pngWhite", "click", () => exportPNG(true));
+  /* Export dropdown — wired via data-action attributes inside the menu */
   initExportDropdown();
-  _on("svgExport", "click", exportSVG);
-  _on("saveConfig", "click", saveConfig);
-  _on("loadConfig", "click", () => {
-    const f = document.getElementById("loadConfigFile");
-    if (f) f.click();
-  });
-  _on("loadConfigFile", "change", loadConfigFile);
 
   /* Alignment */
   document.querySelectorAll("[data-align]").forEach((btn) => {
