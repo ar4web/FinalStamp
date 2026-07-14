@@ -698,7 +698,7 @@ function proportionalScale(factor) {
 
 /* ── Canvas elements ───────────────────────────────────────────── */
 const canvas = document.getElementById("stampCanvas");
-const ctx = canvas.getContext("2d", { alpha: true });
+const ctx = canvas.getContext("2d", { alpha: true, willReadFrequently: true });
 const viewport = document.getElementById("viewport");
 const stage = document.getElementById("stage");
 const zoomRead = document.getElementById("zoomRead");

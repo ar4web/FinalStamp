@@ -556,8 +556,17 @@ h5,
   transition: all 0.15s ease;
 }
 .tb-edge-toggle:hover {
-  color: var(--accent-2);
   border-color: var(--border-glow);
+}
+.tb-edge-logo {
+  width: 16px;
+  height: 16px;
+  display: block;
+  filter: brightness(0) saturate(100%) invert(74%) sepia(9%) saturate(645%) hue-rotate(201deg) brightness(88%) contrast(93%);
+  transition: filter 0.15s ease;
+}
+.tb-edge-toggle:hover .tb-edge-logo {
+  filter: brightness(0) saturate(100%) invert(68%) sepia(52%) saturate(685%) hue-rotate(210deg) brightness(101%) contrast(95%);
 }
 .work-area.sidebar-collapsed .tb-edge-toggle {
   right: auto;
