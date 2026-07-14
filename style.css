@@ -1009,6 +1009,55 @@ h5,
   border-color: var(--border);
   background: var(--bg-hover);
 }
+.rep-nav-btns {
+  display: flex;
+  gap: 2px;
+}
+.rep-nav-btn {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rep-nav-btn:hover {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--bg-hover);
+}
+.rep-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.rep-action-btn {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rep-action-btn:hover {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--bg-hover);
+}
 .rep-body {
   padding: 14px;
   overflow-y: auto;

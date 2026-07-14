@@ -4709,9 +4709,37 @@ function init() {
   /* Undo / Redo / Reset */
   document.getElementById("undoBtn").addEventListener("click", undo);
   document.getElementById("redoBtn").addEventListener("click", redo);
+  document.getElementById("repUndoBtn")?.addEventListener("click", undo);
+  document.getElementById("repRedoBtn")?.addEventListener("click", redo);
   document.getElementById("resetBtn").addEventListener("click", () => {
     resetStamp();
     showToast("Stamp reset to defaults");
+  });
+
+  /* Layer navigation in right panel */
+  document.getElementById("repPrevLayer")?.addEventListener("click", () => {
+    const idx = cfg.layers.findIndex((l) => l.id === selId);
+    if (idx > 0) {
+      selId = cfg.layers[idx - 1].id;
+      selectedIds = new Set([selId]);
+      selShape = false;
+      selRing = null;
+      buildLayerList();
+      buildLayerProps();
+      render();
+    }
+  });
+  document.getElementById("repNextLayer")?.addEventListener("click", () => {
+    const idx = cfg.layers.findIndex((l) => l.id === selId);
+    if (idx < cfg.layers.length - 1) {
+      selId = cfg.layers[idx + 1].id;
+      selectedIds = new Set([selId]);
+      selShape = false;
+      selRing = null;
+      buildLayerList();
+      buildLayerProps();
+      render();
+    }
   });
 
   /* Zoom controls */
