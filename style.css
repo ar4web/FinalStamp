@@ -192,6 +192,15 @@ h5,
   grid-area: left;
   gap: 10px;
 }
+.tb-sidebar-toggle {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--bg-panel-2);
+}
+.tb-sidebar-toggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-glow);
+}
 .tb-center-controls {
   grid-area: center;
   display: flex;
@@ -519,7 +528,7 @@ h5,
   background: var(--grad-panel);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--border);
-  overflow: visible;
+  overflow: hidden;
   transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tool-rail-panel-inner {
@@ -544,45 +553,7 @@ h5,
   gap: 14px;
 }
 
-/* Sidebar edge toggle */
-.tb-edge-toggle {
-  position: absolute;
-  top: 50%;
-  right: -14px;
-  z-index: 20;
-  width: var(--icon-md);
-  height: var(--icon-md);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-panel);
-  border: 1px solid var(--border-strong);
-  color: var(--text-dim);
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateY(-50%);
-}
-.tb-edge-toggle:hover {
-  border-color: var(--border-glow);
-  color: var(--text);
-}
-.tb-edge-icon {
-  width: 16px;
-  height: 16px;
-  display: block;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.work-area.sidebar-collapsed .tb-edge-toggle {
-  right: auto;
-  left: 50%;
-  top: 12px;
-  transform: translateX(-50%);
-}
-.work-area.sidebar-collapsed .tb-edge-icon {
-  transform: rotate(180deg);
-}
+/* Sidebar collapse is now handled by topbar toggle */
 
 /* Section (accordion) */
 .ts-section {
