@@ -17,6 +17,20 @@
 
 import { cfg, SWATCHES, OFFICIAL_PRESETS } from "./state.js";
 
+/* ── Compact stepper utility ──────────────────────────────────────
+   High-density number input with +/- buttons — replaces the heavy
+   double-width range+number slider rows for a tighter inspector. */
+export function createCompactStepper(label, dataKey, currentVal, min, max, step) {
+  return `<div class="compact-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;">
+      <label style="font-size:12px;color:#ccc;user-select:none;">${label}</label>
+      <div style="display:flex;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:4px;padding:2px;">
+        <button type="button" class="manual-step-down" data-target="${dataKey}" data-step="-${step}" style="background:none;border:none;color:#aaa;cursor:pointer;padding:2px 6px;font-weight:bold;">-</button>
+        <input type="number" class="scrubbable-input" data-ls="${dataKey}" value="${currentVal}" min="${min}" max="${max}" step="${step}" style="background:none;border:none;color:#fff;width:50px;text-align:center;font-size:13px;outline:none;">
+        <button type="button" class="manual-step-up" data-target="${dataKey}" data-step="${step}" style="background:none;border:none;color:#aaa;cursor:pointer;padding:2px 6px;font-weight:bold;">+</button>
+      </div>
+    </div>`;
+}
+
 /* ── Fonts (shared with the editor) ────────────────────────────── */
 const FONTS = [
   { group: "Universal (all languages)", items: ["Noto Sans", "Noto Serif"] },
@@ -105,7 +119,7 @@ export function buildRingContextHTML() {
         <button class="layer-icon-btn" data-rng-vis="outer" title="Show/hide" style="opacity:${(rv.outer ?? 1) ? "1" : "0.4"}">${eye("outer", rv.outer ?? 1)}</button>
         <span class="prop-label rp-ring-val" data-rng-val="1">${cfg.outerRingThickness ?? 1}</span>
       </div>
-      <div class="slider-row"><input type="range" min="0.1" max="5" step="0.1" data-rng-width="outer" value="${cfg.outerRingThickness ?? 1}"></div>
+      ${createCompactStepper("Width", "outerRingThickness", cfg.outerRingThickness ?? 1, 0.1, 5, 0.1)}
     </div>
     ${
       cfg.rings >= 2
@@ -117,7 +131,7 @@ export function buildRingContextHTML() {
         <button class="layer-icon-btn" data-rng-vis="inner" title="Show/hide" style="opacity:${(rv.inner ?? 1) ? "1" : "0.4"}">${eye("inner", rv.inner ?? 1)}</button>
         <span class="prop-label rp-ring-val" data-rng-val="2">${cfg.innerRingThickness ?? 0.5}</span>
       </div>
-      <div class="slider-row"><input type="range" min="0" max="5" step="0.1" data-rng-width="inner" value="${cfg.innerRingThickness ?? 0.5}"></div>
+      ${createCompactStepper("Width", "innerRingThickness", cfg.innerRingThickness ?? 0.5, 0, 5, 0.1)}
     </div>`
         : ""
     }
@@ -131,7 +145,7 @@ export function buildRingContextHTML() {
         <button class="layer-icon-btn" data-rng-vis="inner2" title="Show/hide" style="opacity:${(rv.inner2 ?? 1) ? "1" : "0.4"}">${eye("inner2", rv.inner2 ?? 1)}</button>
         <span class="prop-label rp-ring-val" data-rng-val="3">${cfg.innerRing2Thickness ?? 0.5}</span>
       </div>
-      <div class="slider-row"><input type="range" min="0" max="5" step="0.1" data-rng-width="inner2" value="${cfg.innerRing2Thickness ?? 0.5}"></div>
+      ${createCompactStepper("Width", "innerRing2Thickness", cfg.innerRing2Thickness ?? 0.5, 0, 5, 0.1)}
     </div>`
         : ""
     }
@@ -139,8 +153,7 @@ export function buildRingContextHTML() {
       cfg.rings >= 2
         ? `
     <div class="rp-ring-gap">
-      <div class="prop-label">Gap</div>
-      <div class="slider-row"><input type="range" min="0" max="10" step="0.1" data-rng-gap value="${cfg.ringGap || 0}"><input type="number" min="0" max="10" step="0.1" data-rng-gap value="${cfg.ringGap || 0}"></div>
+      ${createCompactStepper("Gap", "ringGap", cfg.ringGap || 0, 0, 10, 0.1)}
     </div>`
         : ""
     }
@@ -172,29 +185,25 @@ export function buildStampContextHTML() {
 
   return `
     <div class="ls-sub-title">Stamp</div>
-    <div class="ls-row"><label class="ls-row-label">${sizeLabel}</label>
-      <div class="slider-row"><input type="range" min="10" max="${sizeMax}" step="0.5" data-ls="size" value="${sizeVal}"><input type="number" min="10" max="${sizeMax}" step="0.5" data-ls="size" value="${sizeVal}"></div>
-    </div>
+    ${createCompactStepper(sizeLabel, "size", sizeVal, 10, sizeMax, 0.5)}
     ${
       !isCircle
-        ? `<div class="ls-row"><label class="ls-row-label">Height</label>
-      <div class="slider-row"><input type="range" min="10" max="90" step="0.5" data-ls="height" value="${cfg.height}"><input type="number" min="10" max="90" step="0.5" data-ls="height" value="${cfg.height}"></div>
-    </div>`
+        ? createCompactStepper("Height", "height", cfg.height, 10, 90, 0.5)
         : ""
     }
-    <div class="ls-row"><label class="ls-row-label">Thickness</label>
-      <div class="slider-row"><input type="range" min="0" max="8" step="0.1" data-ls="thickness" value="${Math.round(thickAvg * 10) / 10}"><input type="number" min="0" max="8" step="0.1" data-ls="thickness" value="${Math.round(thickAvg * 10) / 10}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Center</label>
-      <div class="slider-row"><input type="range" min="0" max="45" step="0.5" data-ls="centerAreaDiameter" value="${cfg.centerAreaDiameter}"><input type="number" min="0" max="45" step="0.5" data-ls="centerAreaDiameter" value="${cfg.centerAreaDiameter}"></div>
-    </div>
+    ${createCompactStepper("Thickness", "thickness", Math.round(thickAvg * 10) / 10, 0, 8, 0.1)}
+    ${createCompactStepper("Center", "centerAreaDiameter", cfg.centerAreaDiameter, 0, 45, 0.5)}
     ${
       isRect
-        ? `<div class="ls-row"><label class="ls-row-label">Corner</label>
-      <div class="slider-row"><input type="range" min="0" max="20" step="0.5" data-ls="cornerRadius" value="${cfg.cornerRadius}"><input type="number" min="0" max="20" step="0.5" data-ls="cornerRadius" value="${cfg.cornerRadius}"></div>
-    </div>`
+        ? createCompactStepper("Corner", "cornerRadius", cfg.cornerRadius, 0, 20, 0.5)
         : ""
     }
+    <div class="ls-row-inline"><label class="ls-row-label">Offset</label>
+      <div class="ls-offset-pair">
+        <input type="number" min="-30" max="30" step="0.5" data-ls="offsetX" value="${cfg.shapeOffsetXmm || 0}" placeholder="X">
+        <input type="number" min="-30" max="30" step="0.5" data-ls="offsetY" value="${cfg.shapeOffsetYmm || 0}" placeholder="Y">
+      </div>
+    </div>
     <div class="ls-row-inline"><label class="ls-row-label">Offset</label>
       <div class="ls-offset-pair">
         <input type="number" min="-30" max="30" step="0.5" data-ls="offsetX" value="${cfg.shapeOffsetXmm || 0}" placeholder="X">
@@ -255,21 +264,11 @@ export function buildTextContextHTML(l) {
     </div>`
         : ""
     }
-    <div class="ls-row"><label class="ls-row-label">Size</label>
-      <div class="slider-row"><input type="range" min="1" max="18" step="0.1" data-ls="sizeMm" value="${l.sizeMm}"><input type="number" min="1" max="18" step="0.1" data-ls="sizeMm" value="${l.sizeMm}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Spacing</label>
-      <div class="slider-row"><input type="range" min="-4" max="20" step="0.5" data-ls="letterSpacing" value="${l.letterSpacing}"><input type="number" min="-4" max="20" step="0.5" data-ls="letterSpacing" value="${l.letterSpacing}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Word sp</label>
-      <div class="slider-row"><input type="range" min="-4" max="30" step="0.5" data-ls="wordSpacing" value="${l.wordSpacing}"><input type="number" min="-4" max="30" step="0.5" data-ls="wordSpacing" value="${l.wordSpacing}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Width</label>
-      <div class="slider-row"><input type="range" min="0.3" max="3" step="0.05" data-ls="scaleX" value="${l.scaleX}"><input type="number" min="0.3" max="3" step="0.05" data-ls="scaleX" value="${l.scaleX}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Height</label>
-      <div class="slider-row"><input type="range" min="0.3" max="3" step="0.05" data-ls="scaleY" value="${l.scaleY}"><input type="number" min="0.3" max="3" step="0.05" data-ls="scaleY" value="${l.scaleY}"></div>
-    </div>
+    ${createCompactStepper("Size", "sizeMm", l.sizeMm, 1, 18, 0.1)}
+    ${createCompactStepper("Spacing", "letterSpacing", l.letterSpacing, -4, 20, 0.5)}
+    ${createCompactStepper("Word sp", "wordSpacing", l.wordSpacing, -4, 30, 0.5)}
+    ${createCompactStepper("Width", "scaleX", l.scaleX, 0.3, 3, 0.05)}
+    ${createCompactStepper("Height", "scaleY", l.scaleY, 0.3, 3, 0.05)}
     ${
       l.mode === "curved"
         ? `
@@ -281,15 +280,9 @@ export function buildTextContextHTML(l) {
         <button class="ls-mini-btn" data-snap="center">Near center</button>
       </div>
     </div>
-    <div class="ls-row"><label class="ls-row-label">Radius</label>
-      <div class="slider-row"><input type="range" min="3" max="42" step="0.1" data-ls="radiusMm" value="${l.radiusMm}"><input type="number" min="3" max="42" step="0.1" data-ls="radiusMm" value="${l.radiusMm}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Start</label>
-      <div class="slider-row"><input type="range" min="0" max="360" step="1" data-ls="startAngle" value="${l.startAngle}"><input type="number" min="0" max="360" step="1" data-ls="startAngle" value="${l.startAngle}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">End</label>
-      <div class="slider-row"><input type="range" min="0" max="360" step="1" data-ls="endAngle" value="${l.endAngle}"><input type="number" min="0" max="360" step="1" data-ls="endAngle" value="${l.endAngle}"></div>
-    </div>
+    ${createCompactStepper("Radius", "radiusMm", l.radiusMm, 3, 42, 0.1)}
+    ${createCompactStepper("Start", "startAngle", l.startAngle, 0, 360, 1)}
+    ${createCompactStepper("End", "endAngle", l.endAngle, 0, 360, 1)}
     <label class="ls-toggle"><input type="checkbox" data-ls="flip"${l.flip ? " checked" : ""}><span>Flip</span></label>
     `
         : `
@@ -326,15 +319,11 @@ export function buildShapeLayerContextHTML(l) {
     .join("");
   return `
     <div class="ls-sub-title">${escapeHtml(l.name) || "Shape"}</div>
-    <div class="ls-row"><label class="ls-row-label">Shape</label>
+     <div class="ls-row"><label class="ls-row-label">Shape</label>
       <select class="ls-select" data-ls="shapeType">${shapeOpts}</select>
     </div>
-    <div class="ls-row"><label class="ls-row-label">Size</label>
-      <div class="slider-row"><input type="range" min="1" max="20" step="0.5" data-ls="shapeSizeMm" value="${l.shapeSizeMm || 10}"><input type="number" min="1" max="20" step="0.5" data-ls="shapeSizeMm" value="${l.shapeSizeMm || 10}"></div>
-    </div>
-    <div class="ls-row"><label class="ls-row-label">Rotation</label>
-      <div class="slider-row"><input type="range" min="0" max="360" step="1" data-ls="shapeRotation" value="${l.shapeRotation || 0}"><input type="number" min="0" max="360" step="1" data-ls="shapeRotation" value="${l.shapeRotation || 0}"></div>
-    </div>
+    ${createCompactStepper("Size", "shapeSizeMm", l.shapeSizeMm || 10, 1, 20, 0.5)}
+    ${createCompactStepper("Rotation", "shapeRotation", l.shapeRotation || 0, 0, 360, 1)}
     <div class="ls-row-inline"><label class="ls-row-label">Offset</label>
       <div class="ls-offset-pair">
         <input type="number" min="-30" max="30" step="0.1" data-ls="offsetXmm" value="${l.offsetXmm || 0}" placeholder="X">
