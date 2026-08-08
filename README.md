@@ -5,7 +5,7 @@
 Design round, oval, rectangular, and custom stamps entirely in the browser — no server, no signup, no watermark. Export as PNG (transparent or white background) or vector SVG at up to 1200 DPI.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Made with TanStack Start](https://img.shields.io/badge/built%20with-TanStack%20Start-6366F1)
+![Made with Vanilla JS](https://img.shields.io/badge/built%20with-Vanilla%20JS-6366F1)
 ![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-ar4web.github.io%2FFinalStamp-6366F1)](https://ar4web.github.io/FinalStamp/)
 
@@ -26,52 +26,49 @@ Design round, oval, rectangular, and custom stamps entirely in the browser — n
 
 ### Try it (no install)
 
-Open `public/stamp/index.html` in any modern browser — the editor is a fully static app and runs offline.
+Open `index.html` in any modern browser — the editor is a fully static app and runs offline.  
+Or serve locally with `python -m http.server 8083` (from project root) and open http://localhost:8083.
 
-### Run the full project locally
+### Run locally
 
-Requirements: [Bun](https://bun.sh) ≥ 1.1 (or Node ≥ 20).
+No build step, no dependencies — just a static web server:
 
 ```bash
 git clone https://github.com/ar4web/FinalStamp.git
-cd stamp-studio
-bun install
-bun run dev
+cd FinalStamp
+python -m http.server 8083   # or: npx serve, or open index.html directly
 ```
 
-Then open <http://localhost:8080>.
-
-### Build for production
-
-```bash
-bun run build
-```
+Then open <http://localhost:8083>.
 
 ## 🧭 Project structure
 
 ```
-public/stamp/       Standalone stamp editor (framework-free HTML/CSS/JS)
-  index.html        UI shell
-  app.js            Canvas, layers, export logic
-  style.css         Theme + layout
-src/routes/         TanStack Start routes (React shell that hosts the editor)
-src/components/     Shared React components
+index.html     — app shell, tool rail, viewport, panels
+style.css      — dark Figma-inspired theme
+js/            — all logic (ES modules)
+  app.js       — central controller, DOM wiring
+  state.js     — cfg model, seeded RNG, history, persistence
+  renderer.js  — canvas drawing (render / renderD)
+  inspector.js — context-sensitive panel markup builders
+  export.js    — PNG / SVG export + download
+logo.svg       — app icon
+assets/        — screenshots, additional logos
 ```
 
 ## 🛠️ Tech stack
 
-- **TanStack Start v1** (React 19 + Vite 7) for the app shell
-- **Tailwind CSS v4** with semantic design tokens
+- Vanilla JavaScript (ES modules) — no framework, no build step
 - Pure Canvas 2D for the stamp renderer — no heavy graphics libs
 - Noto font family for multi-script text
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, workflow, and coding conventions, and our [Code of Conduct](./CODE_OF_CONDUCT.md).
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, workflow, and coding conventions.
 
 Good first issues:
 
-- Add a new stamp template preset (`public/stamp/app.js` → `STAMP_TEMPLATES`)
+- Add a new stamp template preset (`js/app.js` → `TEMPLATES`)
 - Improve RTL text rendering for Arabic/Hebrew curved layers
 - Add PDF export
 - Translate the UI
@@ -89,5 +86,4 @@ Good first issues:
 ## 🙏 Acknowledgements
 
 - [Noto Fonts](https://fonts.google.com/noto) by Google — universal script coverage
-- [TanStack Start](https://tanstack.com/start) — full-stack React framework
 - Everyone who files bugs and sends PRs 💜
