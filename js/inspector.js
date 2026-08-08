@@ -204,12 +204,6 @@ export function buildStampContextHTML() {
         <input type="number" min="-30" max="30" step="0.5" data-ls="offsetY" value="${cfg.shapeOffsetYmm || 0}" placeholder="Y">
       </div>
     </div>
-    <div class="ls-row-inline"><label class="ls-row-label">Offset</label>
-      <div class="ls-offset-pair">
-        <input type="number" min="-30" max="30" step="0.5" data-ls="offsetX" value="${cfg.shapeOffsetXmm || 0}" placeholder="X">
-        <input type="number" min="-30" max="30" step="0.5" data-ls="offsetY" value="${cfg.shapeOffsetYmm || 0}" placeholder="Y">
-      </div>
-    </div>
 
     <div class="ls-sub-title">Ring colors</div>
     ${swatch("outer", "Outer")}
@@ -407,7 +401,7 @@ export function buildLayerProps() {
       <div class="layer-props-item${active}" data-layer-id="${l.id}">
         <span class="layer-props-badge">${badge(l)}</span>
         <span class="layer-props-name" title="${escapeHtml(l.text || l.name || "")}">${escapeHtml(label(l))}</span>
-        <button class="layer-vis-btn" data-layer-vis="${l.id}" title="Toggle visibility">${l.visible ? "◉" : "○"}</button>
+         <button class="layer-vis-btn${l.visible ? " on" : ""}" data-layer-vis="${l.id}" title="Toggle visibility">${l.visible ? "◉" : "○"}</button>
       </div>`;
         })
         .join("")}

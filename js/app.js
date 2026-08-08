@@ -110,8 +110,7 @@ window.stampApp = {
 
 /* ── syncUI ────────────────────────────────────────────────────── */
 function syncUI() {
-  const leftHTML = I.renderLeftSidebar();
-  I.renderRightEditorPanel(leftHTML);
+  I.renderRightEditorPanel();
   R.renderD();
 }
 
@@ -784,9 +783,35 @@ document.addEventListener("click", (e) => {
     // Re-render only the inspector layout block.
     I.renderRightEditorPanel();
     return;
-  }
+   }
 
-  // Handle the sidebar "Add Composition Channels" stack.
+   // Handle layer visibility toggle in the Layers tab.
+   const visBtn = e.target.closest("[data-layer-vis]");
+   if (visBtn) {
+     const lid = visBtn.dataset.layerVis;
+     const l = S.cfg.layers.find((x) => x.id === lid);
+     if (l) {
+       l.visible = !l.visible;
+       S.pushHistory();
+       syncUI();
+     }
+     return;
+   }
+
+   // Handle layer selection in the Layers tab.
+   const layerItem = e.target.closest("[data-layer-id]");
+   if (layerItem && layerItem.classList.contains("layer-props-item")) {
+     const lid = layerItem.dataset.layerId;
+     if (S.cfg.layers.some((x) => x.id === lid)) {
+       S.setSelection(lid);
+       if (!S.cfg.viewState) S.cfg.viewState = {};
+       S.cfg.viewState.activeTab = "selection";
+       syncUI();
+     }
+     return;
+   }
+
+   // Handle the sidebar "Add Composition Channels" stack.
   const addBtn = e.target.closest(
     "#add-text-straight-btn, #add-text-curved-btn, #add-shape-btn, #add-image-btn",
   );
