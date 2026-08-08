@@ -203,6 +203,15 @@ function applyStampKey(key, val) {
     case "offsetY":
       S.cfg.shapeOffsetYmm = val;
       break;
+    case "outerRingThickness":
+    case "innerRingThickness":
+    case "innerRing2Thickness": {
+      S.cfg[key] = val;
+      const rIdx = key === "outerRingThickness" ? "1" : key === "innerRingThickness" ? "2" : "3";
+      const el = document.querySelector(`[data-rng-val="${rIdx}"]`);
+      if (el) el.textContent = String(Math.round(val * 10) / 10);
+      break;
+    }
     default:
       S.cfg[key] = val;
   }
@@ -558,6 +567,24 @@ document.addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   const t = e.target;
   if (!t || t.nodeType !== 1) return;
+
+  const stepBtn = e.target.closest(".manual-step-down, .manual-step-up");
+  if (stepBtn) {
+    const stepDelta = parseFloat(stepBtn.dataset.step);
+    const row = stepBtn.closest(".compact-row");
+    const input = row ? row.querySelector(".scrubbable-input") : null;
+    if (input) {
+      let n = Math.round(((parseFloat(input.value) || 0) + stepDelta) * 100) / 100;
+      const min = parseFloat(input.min), max = parseFloat(input.max);
+      if (!isNaN(min) && n < min) n = min;
+      if (!isNaN(max) && n > max) n = max;
+      input.value = n;
+      applyValue(input);
+      S.pushHistory();
+      syncUI();
+    }
+    return;
+  }
 
   const act = t.closest("[data-act]");
   if (act) return; // reserved for layer-list controls
@@ -1138,8 +1165,11 @@ if (document.readyState === "loading") {
 // Direct safety pass execution — guarantee the canvas viewport layout
 // initializes and any queued state sync is flushed even if an earlier
 // listener was skipped by the host page.
-setTimeout(() => {
-  console.log("Executing absolute initialization fallback.");
-  if (typeof syncUI === "function") syncUI();
-  if (typeof R.renderD === "function") R.renderD();
-}, 100);
+const canvasEl = document.getElementById("stampCanvas");
+if (canvasEl && S.cfg) {
+  const w = S.cfg.outerDiameter || S.cfg.width || 50;
+  const h = S.cfg.height || 50;
+  canvasEl.width = Math.round(S.mmPx(w));
+  canvasEl.height = Math.round(S.mmPx(h));
+}
+setTimeout(() => { syncUI(); if (typeof R.renderD === "function") R.renderD(); }, 30);
