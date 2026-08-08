@@ -547,10 +547,10 @@ h5,
 .tool-rail-panel-inner {
   height: 100%;
   overflow-y: auto;
-  padding: 14px 12px 40px;
+  padding: 10px 10px 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
 /* Sidebar collapse is now handled by topbar toggle */
@@ -566,7 +566,7 @@ h5,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 8px 10px;
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease;
@@ -577,11 +577,11 @@ h5,
 .ts-head-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text);
 }
@@ -596,7 +596,7 @@ h5,
   transform: rotate(-90deg);
 }
 .ts-body {
-  padding: 4px 10px 12px;
+  padding: 2px 8px 8px;
   animation: sectIn 0.2s ease;
 }
 @keyframes sectIn {
@@ -616,19 +616,20 @@ h5,
   display: flex;
   flex-direction: column;
   gap: 2px;
+  margin-top: 4px;
 }
 .tool-menu-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   width: 100%;
-  height: 36px;
-  padding: 0 12px;
+  height: 30px;
+  padding: 0 10px;
   background: transparent;
   color: var(--text);
   border: 1px solid transparent;
   border-radius: var(--r-sm);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   text-align: left;
   transition: all 0.15s ease;
@@ -649,7 +650,7 @@ h5,
 .ls-tpl-chips {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  gap: 4px;
 }
 .tpl-chip {
   aspect-ratio: 1;
@@ -661,7 +662,7 @@ h5,
   border-radius: var(--r-sm);
   color: var(--text-dim);
   transition: all 0.15s ease;
-  padding: 8px;
+  padding: 4px;
 }
 .tpl-chip:hover {
   color: var(--accent-2);
@@ -684,22 +685,22 @@ h5,
 .layer-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  max-height: 360px;
+  gap: 2px;
+  max-height: 320px;
   overflow-y: auto;
   padding-right: 2px;
 }
 .layer-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 8px;
+  gap: 4px;
+  padding: 5px 6px;
   background: var(--bg-elev);
   border: 1px solid transparent;
   border-radius: var(--r-sm);
   cursor: pointer;
   transition: all 0.12s ease;
-  min-height: 32px;
+  min-height: 28px;
 }
 .layer-item:hover {
   border-color: var(--border);
@@ -738,7 +739,7 @@ h5,
 .layer-name {
   flex: 1;
   min-width: 0;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -791,12 +792,12 @@ h5,
 /* Zone (shape picker inside sections) */
 .ls-zone-title {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin: 6px 2px 6px;
+  margin: 4px 0;
 }
 .ls-zone-grid {
   display: grid;
@@ -1052,7 +1053,7 @@ h5,
   background: var(--bg-hover);
 }
 .rep-body {
-  padding: 14px;
+  padding: 10px;
   overflow-y: auto;
   flex: 1;
 }
@@ -1061,8 +1062,8 @@ h5,
 .inspector-tabs-header {
   display: flex;
   gap: 2px;
-  padding: 4px;
-  margin-bottom: 8px;
+  padding: 2px;
+  margin-bottom: 6px;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -1070,15 +1071,15 @@ h5,
 }
 .tab-toggle-btn {
   flex: 1;
-  padding: 8px 12px;
+  padding: 6px 8px;
   background: transparent;
   border: 1px solid transparent;
   border-bottom: 2px solid transparent;
   color: var(--text-dim);
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1100,20 +1101,20 @@ h5,
 .inspector-tab-content-body {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 0;
+  padding: 0 4px;
 }
 
 /* ─── LAYER PROPS LIST (Layers tab) ─── */
 .layer-props-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 .layer-props-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
+  gap: 5px;
+  padding: 5px 8px;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -1130,13 +1131,13 @@ h5,
 }
 .layer-props-badge {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 3px;
   background: var(--bg-panel-2);
   color: var(--text-dim);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -1145,7 +1146,7 @@ h5,
 }
 .layer-props-name {
   flex: 1;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text);
   font-weight: 500;
   overflow: hidden;
@@ -1153,8 +1154,8 @@ h5,
   white-space: nowrap;
 }
 .layer-vis-btn {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1162,7 +1163,7 @@ h5,
   border: 1px solid var(--border);
   color: var(--text-dim);
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 10px;
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -1175,9 +1176,9 @@ h5,
   color: var(--accent-2);
 }
 .layer-props-empty {
-  padding: 18px 8px;
+  padding: 14px 8px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
