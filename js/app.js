@@ -723,6 +723,29 @@ document.addEventListener("click", (e) => {
 
 /* ── Inspector tab toggles + sidebar add-layer actions ─────────── */
 document.addEventListener("click", (e) => {
+  // Handle official sizing preset chips (instant canvas boundary scale).
+  const presetBtn = e.target.closest("[data-preset]");
+  if (presetBtn) {
+    const spec = S.OFFICIAL_PRESETS[presetBtn.dataset.preset];
+    if (spec) {
+      const c = S.cfg;
+      if (spec.type === "circle") {
+        c.shape = "circle";
+        c.outerDiameter = spec.widthMm;
+      } else {
+        c.shape = spec.type; // "oval" | "rectangle"
+        c.width = spec.widthMm;
+        c.height = spec.heightMm;
+      }
+      selShape = false;
+      selRing = null;
+      S.pushHistory();
+      syncUI();
+      showToast("Preset: " + spec.name);
+    }
+    return;
+  }
+
   // Handle tab toggles (Layers / Selection / Stamp Canvas).
   const tabBtn = e.target.closest("[data-tab-target]");
   if (tabBtn) {
@@ -833,6 +856,9 @@ let dragStartX = 0;
 let dragStartY = 0;
 let initialOffsetXmm = 0;
 let initialOffsetYmm = 0;
+let isScaling = false;
+let activeScaleHandle = null;
+let scaleStart = null;
 
 const canvasEl = $("#stampCanvas");
 
@@ -909,12 +935,62 @@ function hitTestLayer(layer, px, py) {
   return px >= b.x && px <= b.x + b.w && py >= b.y && py <= b.y + b.h;
 }
 
+// Match a click against the active layer's corner scale handles.
+// Uses the same transform box the renderer draws so the grab region
+// lines up exactly with the on-canvas anchor nodes.
+const checkScaleHandles = (clickX, clickY, layer) => {
+  const box = R.transformBoxPx(layer);
+  const padding = 6;
+  const lx = box.x - padding;
+  const ly = box.y - padding;
+  const lw = box.w + padding * 2;
+  const lh = box.h + padding * 2;
+
+  // Match if click is near the bottom-right corner node ('se')
+  if (Math.abs(clickX - (lx + lw)) < 12 && Math.abs(clickY - (ly + lh)) < 12) {
+    return "se";
+  }
+  return null;
+};
+
 if (canvasEl) {
   canvasEl.addEventListener("mousedown", (e) => {
     const rect = canvasEl.getBoundingClientRect();
     // Convert click coordinates to canvas matrix coordinates.
     const clickX = (e.clientX - rect.left) * (canvasEl.width / rect.width);
     const clickY = (e.clientY - rect.top) * (canvasEl.height / rect.height);
+
+    isScaling = false;
+    activeScaleHandle = null;
+    scaleStart = null;
+
+    // Scale-handle grab takes priority over translation: only the
+    // currently selected layer's corner anchors are actionable.
+    const currentSel =
+      S.cfg.layers.find((l) => l.id === S.selId) || null;
+    const grabHandle = currentSel
+      ? checkScaleHandles(clickX, clickY, currentSel)
+      : null;
+    if (grabHandle) {
+      S.setSelection(currentSel.id);
+      selShape = false;
+      selRing = null;
+      isScaling = true;
+      activeScaleHandle = grabHandle;
+      dragStartX = clickX;
+      dragStartY = clickY;
+      const sb = R.transformBoxPx(currentSel);
+      scaleStart = {
+        wPx: sb.w,
+        hPx: sb.h,
+        imageWidthMm: currentSel.imageWidthMm || 10,
+        imageHeightMm: currentSel.imageHeightMm || 10,
+        shapeSizeMm: currentSel.shapeSizeMm || 10,
+        sizeMm: currentSel.sizeMm || 4,
+      };
+      syncUI();
+      return;
+    }
 
     // Loop through layers backward (top-most layer first).
     const layers = S.cfg.layers || [];
@@ -944,10 +1020,34 @@ if (canvasEl) {
   });
 
   canvasEl.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
+    if (!isDragging && !isScaling) return;
     const rect = canvasEl.getBoundingClientRect();
     const clickX = (e.clientX - rect.left) * (canvasEl.width / rect.width);
     const clickY = (e.clientY - rect.top) * (canvasEl.height / rect.height);
+
+    const mmPerPx = 25.4 / S.DPI_CURRENT;
+
+    // Scale path: convert px → mm and adjust the per-type dimension.
+    if (isScaling) {
+      const active = S.cfg.layers.find((l) => l.id === S.selId);
+      if (!active || !scaleStart) {
+        isScaling = false;
+        activeScaleHandle = null;
+        return;
+      }
+      const newWpx = Math.max(8, scaleStart.wPx + (clickX - dragStartX));
+      const factor = scaleStart.wPx > 0 ? newWpx / scaleStart.wPx : 1;
+      if (active.type === "image") {
+        active.imageWidthMm = Math.max(1, scaleStart.imageWidthMm * factor);
+        active.imageHeightMm = Math.max(1, scaleStart.imageHeightMm * factor);
+      } else if (active.type === "shape") {
+        active.shapeSizeMm = Math.max(1, scaleStart.shapeSizeMm * factor);
+      } else {
+        active.sizeMm = Math.max(0.5, scaleStart.sizeMm * factor);
+      }
+      R.renderD(); // rapid canvas updates during scale dragging
+      return;
+    }
 
     const dxPx = clickX - dragStartX;
     const dyPx = clickY - dragStartY;
@@ -955,13 +1055,20 @@ if (canvasEl) {
     if (!active) return;
 
     // px → mm so the stored position matches the render model.
-    const mmPerPx = 25.4 / S.DPI_CURRENT;
     active.offsetXmm = +(initialOffsetXmm + dxPx * mmPerPx).toFixed(3);
     active.offsetYmm = +(initialOffsetYmm + dyPx * mmPerPx).toFixed(3);
     R.renderD(); // rapid canvas updates during translation dragging
   });
 
   window.addEventListener("mouseup", () => {
+    if (isScaling) {
+      isScaling = false;
+      activeScaleHandle = null;
+      scaleStart = null;
+      S.pushHistory(); // capture a stable history snapshot on mouse release
+      syncUI();
+      return;
+    }
     if (isDragging) {
       isDragging = false;
       S.pushHistory(); // capture a stable history snapshot on mouse release

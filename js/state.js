@@ -509,6 +509,35 @@ export const stampSize = () =>
     ? { w: cfg.outerDiameter, h: cfg.outerDiameter }
     : { w: cfg.width, h: cfg.height };
 
+/* Official print-dimension sizing presets for the instant layout
+   chips. `type` maps to cfg.shape; circles carry outerDiameter. */
+export const OFFICIAL_PRESETS = {
+  circle40: {
+    name: "Circular Seal (40mm)",
+    widthMm: 40,
+    heightMm: 40,
+    type: "circle",
+  },
+  saudiCorp: {
+    name: "Saudi Corporate (Oval)",
+    widthMm: 50,
+    heightMm: 35,
+    type: "oval",
+  },
+  returnAddress: {
+    name: "Return Address Rect",
+    widthMm: 60,
+    heightMm: 25,
+    type: "rectangle",
+  },
+  pocketSize: {
+    name: "Pocket Stamp Small",
+    widthMm: 38,
+    heightMm: 14,
+    type: "rectangle",
+  },
+};
+
 /* ── Color swatches ────────────────────────────────────────────── */
 export const SWATCHES = ["#1e3a8a", "#c0182a", "#15171c", "#1f7a45"];
 

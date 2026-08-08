@@ -824,6 +824,85 @@ function drawEditorOverlays() {
   }
 }
 
+/* ── Transform box (shared with app.js scale-handle hit-testing) ──
+   Computes the visual boundary rectangle of a layer in canvas px,
+   centered on the layer position (stamp center + shape offset +
+   layer offset). Per-type dimensions mirror how each pass draws. */
+export function transformBoxPx(layer) {
+  const cx = canvas.width / 2 + mmPx(cfg.shapeOffsetXmm || 0);
+  const cy = canvas.height / 2 + mmPx(cfg.shapeOffsetYmm || 0);
+  const lx = cx + mmPx(layer.offsetXmm || 0);
+  const ly = cy + mmPx(layer.offsetYmm || 0);
+
+  let w, h;
+  if (layer.type === "image") {
+    w = mmPx(layer.imageWidthMm || 10);
+    h = mmPx(layer.imageHeightMm || 10);
+  } else if (layer.type === "shape") {
+    w = h = mmPx(layer.shapeSizeMm || 10);
+  } else if (layer.mode === "straight") {
+    const fs = mmPx(layer.sizeMm || 4) * (layer.scaleY || 1);
+    const approxW =
+      mmPx(layer.sizeMm || 4) *
+      (layer.scaleX || 1) *
+      (layer.text || " ").length *
+      0.62;
+    w = Math.max(fs * 0.6, approxW);
+    h = fs * 1.5;
+  } else {
+    const sz = stampSize();
+    const r = layer.radiusMm || 16;
+    const rx = mmPx(r);
+    const ry = cfg.shape === "oval" && sz.w > 0 ? mmPx(r * (sz.h / sz.w)) : rx;
+    const cap = mmPx((layer.sizeMm || 4) / 2);
+    w = 2 * (rx + cap);
+    h = 2 * (ry + cap);
+  }
+  return { x: lx - w / 2, y: ly - h / 2, w, h };
+}
+
+/* ── Direct canvas transformation overlay (scale & rotate handles) ──
+   Draws a dashed bounding box with corner anchor nodes around the
+   currently active layer so users can grab the 'se' handle to scale. */
+export function drawTransformOverlays(ctx, activeLayer) {
+  if (editor.exporting) return;
+  if (!activeLayer || activeLayer.visible === false) return;
+
+  // 1. Calculate active visual boundary metrics (derived from mmPx)
+  const box = transformBoxPx(activeLayer);
+  const padding = 6;
+  const x = box.x - padding;
+  const y = box.y - padding;
+  const w = box.w + padding * 2;
+  const h = box.h + padding * 2;
+
+  ctx.save();
+  ctx.strokeStyle = "#0078d7";
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(x, y, w, h); // Visual boundary outline
+
+  // 2. Render Interactive Control Grab Handles
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = "#0078d7";
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  // Corner Scale Anchor Nodes
+  const handles = [
+    { x: x, y: y, type: "nw" },
+    { x: x + w, y: y, type: "ne" },
+    { x: x, y: y + h, type: "sw" },
+    { x: x + w, y: y + h, type: "se" },
+  ];
+
+  handles.forEach((hand) => {
+    ctx.fillRect(hand.x - 4, hand.y - 4, 8, 8);
+    ctx.strokeRect(hand.x - 4, hand.y - 4, 8, 8);
+  });
+  ctx.restore();
+}
+
 /* ================================================================
    MAIN RENDER
    ================================================================ */
@@ -866,6 +945,7 @@ export function render() {
 
   applyGrunge(rng, cfg.grungeAmount);
   drawEditorOverlays();
+  drawTransformOverlays(ctx, selLayer());
 }
 
 export const renderD = debounce(render, 40);

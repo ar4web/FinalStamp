@@ -8,14 +8,14 @@
    • renderLeftSidebar() returns the static action dock.
    • The per-item property sub-builders (text, shape, image, ring,
      stamp geometry, effects, alignment, swatches) are preserved
-     verbatim, so the data-ls-*/data-rng-* input bindings the app.js
+     verbatim, so the data-ls / data-rng binding keys the app.js
      controller listens for remain completely intact.
 
    Active tab comes from cfg.viewState.activeTab; the selected layer
    comes from window.stampApp.selId (exposed by the controller).
    ================================================================ */
 
-import { cfg, SWATCHES } from "./state.js";
+import { cfg, SWATCHES, OFFICIAL_PRESETS } from "./state.js";
 
 /* ── Fonts (shared with the editor) ────────────────────────────── */
 const FONTS = [
@@ -429,11 +429,28 @@ export function buildLayerProps() {
 /* ================================================================
    LEFT SIDEBAR — static action dock
    ================================================================ */
+const PRESET_CHIP_LABELS = {
+  circle40: "Circle 40mm",
+  saudiCorp: "Saudi Oval",
+  returnAddress: "Return Rect",
+  pocketSize: "Pocket Stamp",
+};
+
 export function renderLeftSidebar() {
+  const presetChips = Object.entries(OFFICIAL_PRESETS)
+    .map(
+      ([key, spec]) =>
+        `<button class="preset-chip-btn btn-secondary" data-preset="${key}" title="${spec.name}">${PRESET_CHIP_LABELS[key] || spec.name}</button>`,
+    )
+    .join("");
+
   return `
         <div class="sidebar-rail-dock">
             <h3>Stamp Blueprint Templates</h3>
             <div id="templates-grid-target"></div>
+            <div class="preset-chips-row" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 12px;">
+                ${presetChips}
+            </div>
             <hr class="panel-divider">
             <h3>Add Composition Channels</h3>
             <div class="action-buttons-stack">
