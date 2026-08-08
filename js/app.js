@@ -104,6 +104,8 @@ window.stampApp = {
   pushHistory: S.pushHistory,
   undo: S.undo,
   redo: S.redo,
+  syncUI: syncUI,
+  render: typeof R.renderD !== "undefined" ? R.renderD : () => {},
 };
 
 /* ── syncUI ────────────────────────────────────────────────────── */
@@ -1132,3 +1134,12 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
+// Direct safety pass execution — guarantee the canvas viewport layout
+// initializes and any queued state sync is flushed even if an earlier
+// listener was skipped by the host page.
+setTimeout(() => {
+  console.log("Executing absolute initialization fallback.");
+  if (typeof syncUI === "function") syncUI();
+  if (typeof R.renderD === "function") R.renderD();
+}, 100);
