@@ -1165,7 +1165,6 @@ if (document.readyState === "loading") {
 // Direct safety pass execution — guarantee the canvas viewport layout
 // initializes and any queued state sync is flushed even if an earlier
 // listener was skipped by the host page.
-const canvasEl = document.getElementById("stampCanvas");
 if (canvasEl && S.cfg) {
   const w = S.cfg.outerDiameter || S.cfg.width || 50;
   const h = S.cfg.height || 50;
