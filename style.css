@@ -624,10 +624,10 @@ h5,
 .tool-menu-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  height: 30px;
-  padding: 0 10px;
+  height: 26px;
+  padding: 0 8px;
   background: transparent;
   color: var(--text);
   border: 1px solid transparent;
@@ -790,6 +790,165 @@ h5,
 .layer-icon-btn:hover[aria-label*="Delete"] {
   color: var(--danger);
   background: rgba(239, 68, 68, 0.1);
+}
+
+/* Tool rail — compact layer list */
+.layer-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.layer-list-compact .layer-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--bg-elev);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  min-height: 24px;
+}
+.layer-list-compact .layer-item:hover {
+  border-color: var(--border);
+  background: var(--bg-hover);
+}
+.layer-list-compact .layer-item.active {
+  background: var(--accent-bg);
+  border-color: var(--border-glow);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.layer-list-compact .layer-item .layer-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layer-list-compact .layer-badge {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(99, 102, 241, 0.14);
+  color: var(--accent-2);
+  flex-shrink: 0;
+}
+.layer-list-compact .layer-vis-btn {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.layer-list-compact .layer-vis-btn.on {
+  color: var(--accent-2);
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+.layer-list-compact .layer-vis-btn:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.layer-list-compact .layer-del-btn {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+}
+.layer-list-compact .layer-del-btn:hover {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
+  opacity: 1;
+}
+.layer-list-empty {
+  padding: 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Tool rail — effects quick sliders */
+.effects-quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.effect-quick-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.effect-quick-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  min-width: 48px;
+}
+.effect-quick-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  background: var(--bg-elev);
+  border-radius: 2px;
+  outline: none;
+  transition: background 0.15s;
+}
+.effect-quick-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.effect-quick-slider:hover {
+  background: var(--border);
+}
+.effect-quick-slider:hover::-webkit-slider-thumb {
+  background: var(--accent-2);
+}
+.effect-quick-val {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-dim);
+  min-width: 26px;
+  text-align: right;
 }
 
 /* Zone (shape picker inside sections) */

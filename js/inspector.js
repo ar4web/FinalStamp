@@ -410,6 +410,49 @@ export function buildLayerProps() {
 }
 
 /* ================================================================
+   TOOL RAIL — dynamic layer list + effects sync
+   ================================================================ */
+export function buildLayerListHTML() {
+  const activeLayerId = window.stampApp ? window.stampApp.selId : null;
+  const layers = cfg.layers || [];
+
+  if (!layers.length) {
+    return `<div class="layer-list-empty">No layers yet</div>`;
+  }
+
+  const badge = (l) =>
+    l.type === "image"
+      ? "IMG"
+      : l.type === "shape"
+        ? "SHAPE"
+        : l.mode === "curved"
+          ? "ARC"
+          : "LINE";
+
+  const label = (l) =>
+    l.name ||
+    (l.text ? l.text.slice(0, 16) : l.type.charAt(0).toUpperCase() + l.type.slice(1));
+
+  return `
+    <div class="layer-list-compact">
+      ${layers
+        .map((l) => {
+          const active = l.id === activeLayerId ? " active" : "";
+          const visOn = l.visible !== false;
+          return `
+        <div class="layer-item${active}" data-layer-id="${l.id}">
+          <span class="layer-badge">${badge(l)}</span>
+          <span class="layer-name" title="${escapeHtml(l.text || l.name || "")}">${escapeHtml(label(l))}</span>
+          <button class="layer-vis-btn${visOn ? " on" : ""}" data-layer-vis="${l.id}" title="Toggle visibility">${visOn ? "◉" : "○"}</button>
+          <button class="layer-del-btn" data-layer-del="${l.id}" title="Delete layer">×</button>
+        </div>`;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
+/* ================================================================
    LEFT SIDEBAR — static action dock
    ================================================================ */
 const PRESET_CHIP_LABELS = {

@@ -536,6 +536,58 @@
               </div>
             </div>
 
+            <!-- = LAYERS = -->
+            <div class="ts-section">
+              <div class="ts-head">
+                <span class="ts-head-label">
+                  <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M3 6h8v2H3zM3 10h8M3 14h8M3 2h8" />
+                  </svg>
+                  LAYERS
+                </span>
+                <svg class="ts-chevron" data-ts="layers" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M3 5l3 3 3-3" />
+                </svg>
+              </div>
+              <div class="ts-body" data-ts-body="layers">
+                <div class="layer-list-compact" id="layerListTarget"></div>
+              </div>
+            </div>
+
+            <!-- = EFFECTS = -->
+            <div class="ts-section">
+              <div class="ts-head">
+                <span class="ts-head-label">
+                  <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M4 6l3-3 3 3v6l-3 3-3-3z" />
+                  </svg>
+                  EFFECTS
+                </span>
+                <svg class="ts-chevron" data-ts="effects" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M3 5l3 3 3-3" />
+                </svg>
+              </div>
+               <div class="ts-body" data-ts-body="effects">
+                 <div class="effects-quick-list" id="effectsQuickList">
+                   <div class="effect-quick-row">
+                     <label class="effect-quick-label">Bleed</label>
+                     <input type="range" class="effect-quick-slider" data-effamt="inkBleedAmount" min="0" max="2" step="0.05" value="0.5">
+                     <span class="effect-quick-val" data-eff-val="inkBleedAmount">0.5</span>
+                   </div>
+                   <div class="effect-quick-row">
+                     <label class="effect-quick-label">Grunge</label>
+                     <input type="range" class="effect-quick-slider" data-effamt="grungeAmount" min="0" max="1" step="0.01" value="0.3">
+                     <span class="effect-quick-val" data-eff-val="grungeAmount">0.3</span>
+                   </div>
+                   <div class="effect-quick-row">
+                     <label class="effect-quick-label">Jitter</label>
+                     <input type="range" class="effect-quick-slider" data-effamt="jitterDegrees" min="0" max="1.5" step="0.05" value="0.9">
+                     <span class="effect-quick-val" data-eff-val="jitterDegrees">0.9</span>
+                   </div>
+                 </div>
+               </div>
+            </div>
+
           </div>
         </aside>
 
