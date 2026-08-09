@@ -111,7 +111,15 @@ window.stampApp = {
 /* ── syncUI ────────────────────────────────────────────────────── */
 function syncUI() {
   I.renderRightEditorPanel();
+  syncTemplateChips();
   R.renderD();
+}
+
+function syncTemplateChips() {
+  const activeTpl = S.cfg.template || "oval";
+  document.querySelectorAll(".tpl-chip[data-template]").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.template === activeTpl);
+  });
 }
 
 /* ── Layer helpers ─────────────────────────────────────────────── */
@@ -158,6 +166,8 @@ function selectRelative(delta) {
   selShape = false;
   selRing = null;
   showEffects = false;
+  if (!S.cfg.viewState) S.cfg.viewState = {};
+  S.cfg.viewState.activeTab = "selection";
   syncUI();
 }
 
