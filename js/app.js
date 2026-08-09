@@ -112,6 +112,7 @@ window.stampApp = {
 function syncUI() {
   I.renderRightEditorPanel();
   syncTemplateChips();
+  syncToolRail();
   R.renderD();
 }
 
@@ -120,6 +121,24 @@ function syncTemplateChips() {
   document.querySelectorAll(".tpl-chip[data-template]").forEach((chip) => {
     chip.classList.toggle("active", chip.dataset.template === activeTpl);
   });
+}
+
+function syncToolRail() {
+  const target = document.getElementById("layerListTarget");
+  if (target) target.innerHTML = I.buildLayerListHTML();
+
+  const effectsTarget = document.getElementById("effectsQuickList");
+  if (effectsTarget) {
+    const sliders = effectsTarget.querySelectorAll(".effect-quick-slider");
+    sliders.forEach((s) => {
+      const key = s.dataset.eff;
+      if (key && S.cfg[key] != null) {
+        s.value = S.cfg[key];
+        const valSpan = s.parentNode.querySelector(`[data-eff-val="${key}"]`);
+        if (valSpan) valSpan.textContent = Number(s.value).toFixed(key.includes("Amount") ? 2 : 1);
+      }
+    });
+  }
 }
 
 /* ── Layer helpers ─────────────────────────────────────────────── */
@@ -311,6 +330,10 @@ document.addEventListener("input", (e) => {
     applyBind(t, ds.bind);
   } else if (ds.eff) {
     S.cfg[ds.eff] = t.checked;
+  } else if (ds.effamt) {
+    S.cfg[ds.effamt] = parseFloat(t.value);
+    const valSpan = t.parentNode.querySelector(`[data-eff-val="${ds.effamt}"]`);
+    if (valSpan) valSpan.textContent = Number(t.value).toFixed(ds.effamt.includes("Amount") ? 2 : 1);
   } else {
     return;
   }
@@ -660,6 +683,45 @@ document.addEventListener("click", (e) => {
   const preset = t.closest("[data-preset]");
   if (preset) {
     applyPreset(parseInt(preset.dataset.preset, 10));
+    return;
+  }
+
+  const layerLink = t.closest("[data-layer-id]");
+  if (layerLink) {
+    const lid = layerLink.dataset.layerId;
+    S.setSelection(lid);
+    if (!S.cfg.viewState) S.cfg.viewState = {};
+    S.cfg.viewState.activeTab = "layers";
+    syncUI();
+    return;
+  }
+
+  const layerVis = t.closest("[data-layer-vis]");
+  if (layerVis) {
+    const lid = layerVis.dataset.layerVis;
+    const l = S.cfg.layers.find((x) => x.id === lid);
+    if (l) {
+      l.visible = !l.visible;
+      S.pushHistory();
+      syncUI();
+      R.renderD();
+    }
+    return;
+  }
+
+  const layerDel = t.closest("[data-layer-del]");
+  if (layerDel) {
+    const lid = layerDel.dataset.layerDel;
+    const l = S.cfg.layers.find((x) => x.id === lid);
+    if (l) {
+      S.cfg.layers = S.cfg.layers.filter((x) => x.id !== lid);
+      if (S.cfg.layers.length) {
+        S.setSelection(S.cfg.layers[Math.min(S.cfg.layers.indexOf(l), S.cfg.layers.length - 1)].id);
+      }
+      S.pushHistory();
+      syncUI();
+      R.renderD();
+    }
     return;
   }
 
