@@ -21,12 +21,12 @@ import { cfg, SWATCHES, OFFICIAL_PRESETS } from "./state.js";
    High-density number input with +/- buttons — replaces the heavy
    double-width range+number slider rows for a tighter inspector. */
 export function createCompactStepper(label, dataKey, currentVal, min, max, step) {
-  return `<div class="compact-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;">
-      <label style="font-size:12px;color:#ccc;user-select:none;">${label}</label>
-      <div style="display:flex;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:4px;padding:2px;">
-        <button type="button" class="manual-step-down" data-target="${dataKey}" data-step="-${step}" style="background:none;border:none;color:#aaa;cursor:pointer;padding:2px 6px;font-weight:bold;">-</button>
-        <input type="number" class="scrubbable-input" data-ls="${dataKey}" value="${currentVal}" min="${min}" max="${max}" step="${step}" style="background:none;border:none;color:#fff;width:50px;text-align:center;font-size:13px;outline:none;">
-        <button type="button" class="manual-step-up" data-target="${dataKey}" data-step="${step}" style="background:none;border:none;color:#aaa;cursor:pointer;padding:2px 6px;font-weight:bold;">+</button>
+  return `<div class="compact-row">
+      <label class="compact-label">${label}</label>
+      <div class="compact-input-group">
+        <button type="button" class="manual-step-down" data-target="${dataKey}" data-step="-${step}">-</button>
+        <input type="number" class="scrubbable-input" data-ls="${dataKey}" value="${currentVal}" min="${min}" max="${max}" step="${step}">
+        <button type="button" class="manual-step-up" data-target="${dataKey}" data-step="${step}">+</button>
       </div>
     </div>`;
 }
@@ -455,6 +455,12 @@ export function renderRightEditorPanel() {
   const layers = cfg.layers || [];
   const currentLayer = layers.find((l) => l.id === activeLayerId);
 
+  const tabTitles = {
+    layers: "LAYERS",
+    selection: "PROPERTIES",
+    stamp: "STAMP SETTINGS",
+  };
+
   // Build Tab Navigation Header
   let html = `
         <div class="inspector-tabs-header">
@@ -467,7 +473,7 @@ export function renderRightEditorPanel() {
 
   // Inject matching sub-builder layout strings into the active tab slot
   if (activeTab === "layers") {
-    html += buildLayerProps(); // Render the layers list manager panel
+    html += buildLayerProps();
   } else if (activeTab === "selection" && currentLayer) {
     if (currentLayer.type === "text") html += buildTextContextHTML(currentLayer);
     else if (currentLayer.type === "shape") html += buildShapeLayerContextHTML(currentLayer);
@@ -482,4 +488,7 @@ export function renderRightEditorPanel() {
 
   const rep = document.getElementById("repBody");
   if (rep) rep.innerHTML = html;
+
+  const title = document.querySelector("#rightEditorPanel .rep-title");
+  if (title) title.textContent = tabTitles[activeTab] || "EDITOR";
 }
