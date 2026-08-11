@@ -590,6 +590,7 @@
 
           </div>
         </aside>
+        <div class="resize-handle" id="toolRailResize" aria-label="Resize left panel"></div>
 
         <!-- ─── CANVAS VIEWPORT ─── -->
         <section class="viewport" id="viewport" aria-label="Stamp canvas">
@@ -662,13 +663,14 @@
           </div>
         </section>
 
-        <!-- ─── FLOATING RIGHT EDITOR PANEL ─── -->
-        <aside
-          class="right-editor-panel"
-          id="rightEditorPanel"
-          aria-label="Editor"
-        >
-          <div class="rep-header">
+         <!-- ─── FLOATING RIGHT EDITOR PANEL ─── -->
+         <aside
+           class="right-editor-panel"
+           id="rightEditorPanel"
+           aria-label="Editor"
+         >
+           <div class="resize-handle-right" id="rightPanelResize" aria-label="Resize right panel"></div>
+           <div class="rep-header">
             <div class="rep-actions">
               <button class="rep-action-btn" id="repUndoBtn" title="Undo (Ctrl+Z)">&#8617;</button>
               <button class="rep-action-btn" id="repRedoBtn" title="Redo (Ctrl+Y)">&#8618;</button>

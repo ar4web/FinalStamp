@@ -70,7 +70,11 @@ export function autoHist() {
 /* Replace the whole configuration object (used by undo/redo,
    applyTemplate, reset, loadPreset, importConfig…). Keeps DPI in sync. */
 export function setConfig(next) {
+  const prevToolrailW = cfg && cfg.toolrailWidth;
+  const prevRepW = cfg && cfg.repWidth;
   cfg = next;
+  if (prevToolrailW != null) cfg.toolrailWidth = prevToolrailW;
+  if (prevRepW != null) cfg.repWidth = prevRepW;
   DPI_CURRENT = next.dpi || 300;
 }
 
@@ -499,6 +503,8 @@ export function buildConfig(name) {
     editorZoom: 0.75,
     editorPanX: 0,
     editorPanY: 0,
+    toolrailWidth: 260,
+    repWidth: 300,
   });
 }
 
