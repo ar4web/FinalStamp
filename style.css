@@ -58,6 +58,7 @@
   /* Sizing */
   --topbar-h: 52px;
   --toolrail-w: 260px;
+  --rep-w: 300px;
 
   /* Icon sizes */
   --icon-sm: 22px;
@@ -103,9 +104,13 @@ body {
     var(--bg-app);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-  letter-spacing: 0.005em;
-}
+   overflow: hidden;
+   letter-spacing: 0.005em;
+ }
+ .no-select {
+   user-select: none;
+   cursor: col-resize;
+ }
 button {
   font-family: inherit;
   cursor: pointer;
@@ -522,14 +527,79 @@ h5,
   grid-template-columns: 44px 1fr;
 }
 
+/* ─── RESIZE HANDLES ─── */
+.resize-handle {
+  position: relative;
+  width: 6px;
+  min-width: 6px;
+  margin: -4px 0;
+  align-self: stretch;
+  cursor: col-resize;
+  z-index: 10;
+  touch-action: none;
+  user-select: none;
+}
+.resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.resize-handle:hover::after,
+.resize-handle.dragging::after {
+  opacity: 0.5;
+}
+.resize-handle.dragging {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.resize-handle-right {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 10px;
+  height: 100%;
+  margin: 0 -5px;
+  cursor: col-resize;
+  z-index: 20;
+  touch-action: none;
+  user-select: none;
+}
+.resize-handle-right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.resize-handle-right:hover::before,
+.resize-handle-right.dragging::before {
+  opacity: 0.5;
+}
+.resize-handle-right.dragging {
+  background: rgba(99, 102, 241, 0.1);
+}
+
 /* ─── LEFT TOOL RAIL PANEL ─── */
 .tool-rail-panel {
   position: relative;
+  width: var(--toolrail-w);
   background: var(--grad-panel);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--border);
   overflow: hidden;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tool-rail-panel-inner {
   overflow-x: hidden;
@@ -551,6 +621,7 @@ h5,
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: padding 0.2s ease;
 }
 
 /* Sidebar collapse is now handled by topbar toggle */
@@ -600,18 +671,22 @@ h5,
 }
 .ts-body {
   padding: 2px 8px 8px;
-  animation: sectIn 0.2s ease;
-}
-@keyframes sectIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+  transition:
+    max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .ts-section.ts-collapsed .ts-body {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  padding: 0 8px;
+  transition:
+    max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.15s ease,
+    padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Tool menu list (Add Curved / Straight / Shape / Logo) */
@@ -1015,6 +1090,7 @@ h5,
 .stage {
   position: relative;
   transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 #stampCanvas {
   display: block;
@@ -1024,6 +1100,7 @@ h5,
     0 0 60px rgba(79, 70, 229, 0.2);
   border-radius: 2px;
   background: #fff;
+  transition: box-shadow 0.2s ease;
 }
 
 /* Zoom HUD */
@@ -1107,10 +1184,11 @@ h5,
   flex-direction: column;
   z-index: 40;
   overflow: hidden;
-  transition:
-    opacity 0.2s,
-    transform 0.2s,
-    right 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+   transition:
+     opacity 0.2s,
+     transform 0.2s ease,
+     right 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+     width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .work-area.sidebar-collapsed .right-editor-panel {
   right: 12px;

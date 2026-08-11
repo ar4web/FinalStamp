@@ -131,7 +131,7 @@ function syncToolRail() {
   if (effectsTarget) {
     const sliders = effectsTarget.querySelectorAll(".effect-quick-slider");
     sliders.forEach((s) => {
-      const key = s.dataset.eff;
+      const key = s.dataset.effamt;
       if (key && S.cfg[key] != null) {
         s.value = S.cfg[key];
         const valSpan = s.parentNode.querySelector(`[data-eff-val="${key}"]`);
@@ -1203,6 +1203,93 @@ if (canvasEl) {
   });
 }
 
+/* ── Draggable resize handles ─────────────────────────────────────── */
+function setupResizeHandles() {
+  const toolRailHandle = $("#toolRailResize");
+  const rightPanelHandle = $("#rightPanelResize");
+
+  function bindResize(handle, onDrag) {
+    if (!handle) return;
+    let startX, startW, isDragging = false;
+
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      let newW = startW + dx;
+      startW = newW;
+      onDrag(newW, e);
+    };
+
+    const onMouseUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      handle.classList.remove("dragging");
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      document.body.classList.remove("no-select");
+    };
+
+    handle.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      isDragging = true;
+      handle.classList.add("dragging");
+      startX = e.clientX;
+      startW = onDrag.getStartWidth();
+      document.body.style.cursor = "col-resize";
+      document.body.classList.add("no-select");
+    });
+
+    handle.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      isDragging = true;
+      handle.classList.add("dragging");
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startW = onDrag.getStartWidth();
+      document.body.style.cursor = "col-resize";
+      document.body.classList.add("no-select");
+    });
+
+    handle.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const dx = touch.clientX - startX;
+      let newW = startW + dx;
+      startW = newW;
+      onDrag(newW, e);
+    }, { passive: false });
+
+    handle.addEventListener("touchcancel", onMouseUp);
+    handle.addEventListener("touchend", onMouseUp);
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
+  /* Tool rail resize */
+  bindResize(toolRailHandle, Object.assign(
+    (newW) => {
+      const clamped = Math.max(200, Math.min(500, Math.round(newW)));
+      document.documentElement.style.setProperty("--toolrail-w", clamped + "px");
+      S.cfg.toolrailWidth = clamped;
+    },
+    { getStartWidth: () => S.cfg.toolrailWidth || 260 }
+  ));
+
+  /* Right editor panel resize */
+  bindResize(rightPanelHandle, Object.assign(
+    (newW) => {
+      const clamped = Math.max(240, Math.min(600, Math.round(newW)));
+      const rep = $("#rightEditorPanel");
+      if (rep) {
+        rep.style.width = clamped + "px";
+        S.cfg.repWidth = clamped;
+      }
+    },
+    { getStartWidth: () => S.cfg.repWidth || 300 }
+  ));
+}
+
 /* ── Init ──────────────────────────────────────────────────────── */
 function verifyState() {
   if (!S.cfg || !Array.isArray(S.cfg.layers) || !S.cfg.layers.length) {
@@ -1249,6 +1336,14 @@ function init() {
       if (file.files && file.files[0]) importConfigFile(file.files[0]);
       file.value = "";
     });
+
+  // Restore persisted panel widths.
+  const root = document.documentElement;
+  if (S.cfg.toolrailWidth) root.style.setProperty("--toolrail-w", S.cfg.toolrailWidth + "px");
+  const rep = $("#rightEditorPanel");
+  if (S.cfg.repWidth && rep) rep.style.width = S.cfg.repWidth + "px";
+
+  setupResizeHandles();
 
   syncUI();
 }
